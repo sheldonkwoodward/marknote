@@ -39,6 +39,16 @@ class App extends Component {
   chooseNote(id) {
     this.setState({current: id});
   }
+  updateTitle(title) {    
+    let state = this.state;
+    state.notes[state.current].title = title;
+    this.setState(state);
+  }
+  updateContent(content) {
+    let state = this.state;
+    state.notes[state.current].content = content;
+    this.setState(state);
+  }
   render() {    
     return (
       <div className="container">
@@ -48,10 +58,18 @@ class App extends Component {
         <br />
         <div className="row">
           <div className="col-4">
-            <Sidebar current={this.state.current} notes={this.state.notes} onChooseNote={n => this.chooseNote(n)} />                      
+            <Sidebar
+              current={this.state.current}
+              notes={this.state.notes}
+              onChooseNote={n => this.chooseNote(n)}
+            />                      
           </div>
           <div className="col">
-            <Editor />
+            <Editor
+              note={this.state.notes[this.state.current]}
+              onUpdateTitle={t => this.updateTitle(t)}
+              onUpdateContent={c => this.updateContent(c)}
+            />
           </div>
         </div>
 
