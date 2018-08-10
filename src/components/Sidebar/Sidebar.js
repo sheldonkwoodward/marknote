@@ -6,20 +6,16 @@ import SidebarItem from '../SidebarItem/SidebarItem';
 
 class Sidebar extends Component {
   render() {
+    const notes = this.props.notes.map((n) => 
+                  <SidebarItem
+                    key={n.id}
+                    note={n}
+                    onChooseNote={n => this.props.onChooseNote(n)}
+                    current={this.props.current}
+                  />);
     return (
-      <div className="Sidebar">
-        <h1>Sidebar</h1>
-        <ol>
-          <li>
-            <SidebarItem />
-          </li>
-          <li>
-            <SidebarItem />
-          </li>
-          <li>
-            <SidebarItem />
-          </li>
-        </ol>
+      <div className="list-group">
+        {notes}
       </div>
     );
   }
