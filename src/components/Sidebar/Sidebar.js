@@ -6,6 +6,21 @@ import SidebarFolder from '../SidebarFolder/SidebarFolder';
 
 
 class Sidebar extends Component {
+  sortNotes(a, b) {
+    if (a.timestamp > b.timestamp)
+      return -1;
+    if (a.timestamp < b.timestamp)
+      return 1;
+    return 0;
+  }
+  sortFolders(a, b) {
+    if (a.title < b.title)
+      return -1;
+    if (a.title > b.title)
+      return 1;
+    return 0;
+  }
+  
   render() {
     const notes = this.props.notes.map((n) => 
                   <SidebarItem
@@ -20,6 +35,9 @@ class Sidebar extends Component {
                     folder={f}
                     onChooseFolder={id => this.props.onChooseNote(id)}
                   />);
+    
+    notes.sort(this.sortNodes);
+    folders.sort(this.sortFolders);
     return (
       <div>
         <div className="btn-group mb-3" role="group">
@@ -32,6 +50,15 @@ class Sidebar extends Component {
                   onClick={() => this.props.onAddFolder()}
           >
             <i className="fas fa-folder"></i>
+          </button>
+          <button className="btn btn-primary">
+            <i className="fas fa-sync-alt"></i>
+          </button>
+          <button className="btn btn-primary">
+            <i className="fas fa-moon"></i>
+          </button>
+          <button className="btn btn-primary">
+            <i className="fas fa-eye"></i>
           </button>
         </div>
         <div className="list-group mb-3">
