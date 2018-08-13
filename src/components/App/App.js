@@ -39,7 +39,11 @@ class App extends Component {
     let draft = this.state.draft;
     let notes = this.state.notes;
     draft.timestamp = Date.now();
-    notes[this.getIndexCurrent()] = draft;
+    if (this.getIndexCurrent() === null) {
+      notes.unshift(draft);
+    } else {
+      notes[this.getIndexCurrent()] = draft;
+    }
     this.setState({notes: notes});
   }
   updateTitle(title) {
@@ -60,16 +64,15 @@ class App extends Component {
     this.setState({current: id});
   }
   addNote() {
-    let notes = this.state.notes;
-    let note = {
-      id: this.generateId(),
+    let id = this.generateId();
+    let draft = {
+      id: id,
       title: "",
       content: "",
       timestamp: Date.now(),
     };
-    notes.unshift(note);
-    this.setState({notes: notes});
-    this.chooseNote(note.id);
+    this.setState({draft: Object.assign({}, draft)});
+    this.setState({current: id});
   }
   deleteNote(id) {
     let notes = this.state.notes;
@@ -98,7 +101,7 @@ class App extends Component {
   // render
   render() {
     let editor = <div className="col"></div>
-    if (this.getIndexCurrent() != null) {
+    if (this.state.current != null) {
       editor = <div className="col">
                   <Editor
                     draft={this.state.draft}
