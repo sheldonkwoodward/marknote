@@ -11,6 +11,7 @@ class App extends Component {
     super(props);
     this.state = {
       current: null,
+      draft: {},
       notes: [],
       folders: [],
     }
@@ -33,24 +34,29 @@ class App extends Component {
     return uuid;
   }
   
-  // update notes
-  updateCurrentTitle(title) {
+  // updating notes
+  saveNote() {
+    let draft = this.state.draft;
     let notes = this.state.notes;
-    notes[this.getIndexCurrent()].title = title;
+    draft.timestamp = Date.now();
+    notes[this.getIndexCurrent()] = draft;
     this.setState({notes: notes});
   }
-  updateCurrentContent(content) {
-    let notes = this.state.notes;
-    notes[this.getIndexCurrent()].content = content;
-    this.setState({notes: notes});
+  updateTitle(title) {
+    let draft = this.state.draft;
+    draft.title = title;
+    this.setState({draft: draft});
   }
-  updateCurrentTimestamp() {
-    let notes = this.notes;
-    notes[this.getIndexCurrent()].timestamp = Date.now();
+  updateContent(content) {
+    let draft = this.state.draft;
+    draft.content = content;
+    this.setState({draft: draft});
   }
   
   // manage notes
   chooseNote(id) {
+    let draft = this.state.notes[this.getIndexById(id)];
+    this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
   }
   addNote() {
@@ -63,7 +69,7 @@ class App extends Component {
     };
     notes.unshift(note);
     this.setState({notes: notes});
-    this.setState({current: note.id})
+    this.chooseNote(note.id);
   }
   deleteNote(id) {
     let notes = this.state.notes;
@@ -95,9 +101,10 @@ class App extends Component {
     if (this.getIndexCurrent() != null) {
       editor = <div className="col">
                   <Editor
-                    note={this.state.notes[this.getIndexCurrent()]}
-                    onUpdateCurrentTitle={t => this.updateCurrentTitle(t)}
-                    onUpdateCurrentContent={c => this.updateCurrentContent(c)}
+                    draft={this.state.draft}
+                    onSaveNote={() => this.saveNote()}
+                    onUpdateTitle={t => this.updateTitle(t)}
+                    onUpdateContent={c => this.updateContent(c)}
                   />
                 </div>
     }
@@ -115,10 +122,10 @@ class App extends Component {
               notes={this.state.notes}
               folders={this.state.folders}
               onChooseNote={id => this.chooseNote(id)}
-              onAddNote={() => this.addNote()}
-              onDeleteNote={id => this.deleteNote(id)}
               onChooseFolder={id => this.chooseFolder(id)}
+              onAddNote={() => this.addNote()}
               onAddFolder={() => this.addFolder()}
+              onDeleteNote={id => this.deleteNote(id)}
               onDeleteFolder={id => this.deleteFolder(id)}
             />                      
           </div>

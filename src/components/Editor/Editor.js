@@ -13,8 +13,8 @@ class Editor extends Component {
           <div className="form-row">
             <div className="form-group col mr-2">
               <input
-                onChange={t => this.props.onUpdateCurrentTitle(t.target.value)}
-                value={this.props.note.title}
+                onChange={t => this.props.onUpdateTitle(t.target.value)}
+                value={this.props.draft.title}
                 type="text"
                 className="form-control form-control-lg"
                 placeholder="Title"
@@ -23,12 +23,20 @@ class Editor extends Component {
             </div>
             <div className="btn-group form-group">
               <button className="btn btn-lg btn-primary"
-                      onClick={() => this.props.onDeleteNote(this.props.current)}
+                      onClick={() => this.props.onSaveNote(this.props.draft)}
+                      type="button"
+              >
+                <i className="fas fa-save"></i>
+              </button>
+              <button className="btn btn-lg btn-primary"
+                      // onClick={() => this.props.onDeleteNote(this.props.current)}
+                      type="button"
               >
                 <i className="fas fa-copy"></i>
               </button>
               <button className="btn btn-lg btn-danger"
-                      onClick={() => this.props.onDeleteNote(this.props.current)}
+                      // onClick={() => this.props.onDeleteNote(this.props.current)}
+                      type="button"
               >
                 <i className="fas fa-trash"></i>
               </button>
@@ -36,8 +44,8 @@ class Editor extends Component {
           </div>
         </form>
         <SimpleMDE
-          onChange={c => this.props.onUpdateCurrentContent(c)}
-          value={this.props.note.content}
+          onChange={c => this.props.onUpdateContent(c)}
+          value={this.props.draft.content}
           options={{
             autofocus: true,
             spellChecker: true,
