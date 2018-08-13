@@ -33,14 +33,12 @@ class App extends Component {
   }
   
   // update notes
-  // TODO: pass id
-  updateTitle(title) {
+  updateCurrentTitle(title) {
     let notes = this.state.notes;
     notes[this.getIndexCurrent()].title = title;
     this.setState({notes: notes});
   }
-  // TODO: pass id
-  updateContent(content) {
+  updateCurrentContent(content) {
     let notes = this.state.notes;
     notes[this.getIndexCurrent()].content = content;
     this.setState({notes: notes});
@@ -77,8 +75,8 @@ class App extends Component {
       editor = <div className="col">
                   <Editor
                     note={this.state.notes[this.getIndexCurrent()]}
-                    onUpdateTitle={t => this.updateTitle(t)}
-                    onUpdateContent={c => this.updateContent(c)}
+                    onUpdateCurrentTitle={t => this.updateCurrentTitle(t)}
+                    onUpdateCurrentContent={c => this.updateCurrentContent(c)}
                   />
                 </div>
     }  
@@ -93,9 +91,9 @@ class App extends Component {
             <Sidebar
               current={this.state.current}
               notes={this.state.notes}
-              onChooseNote={n => this.chooseNote(n)}
+              onChooseNote={id => this.chooseNote(id)}
               onAddNote={() => this.addNote()}
-              onDeleteNote={n => this.deleteNote(n)}
+              onDeleteNote={id => this.deleteNote(id)}
             />                      
           </div>
           {editor}

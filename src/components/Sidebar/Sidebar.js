@@ -10,7 +10,7 @@ class Sidebar extends Component {
                   <SidebarItem
                     key={n.id}
                     note={n}
-                    onChooseNote={n => this.props.onChooseNote(n)}
+                    onChooseNote={id => this.props.onChooseNote(id)}
                     current={this.props.current}
                   />);
     return (

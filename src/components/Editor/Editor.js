@@ -6,16 +6,13 @@ import "simplemde/dist/simplemde.min.css";
 
 
 class Editor extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return (
       <div>
         <form>
           <div className="form-group">
             <input
-              onChange={t => this.props.onUpdateTitle(t.target.value)}
+              onChange={t => this.props.onUpdateCurrentTitle(t.target.value)}
               value={this.props.note.title}
               type="text"
               className="form-control form-control-lg"
@@ -25,7 +22,7 @@ class Editor extends Component {
           </div>
         </form>
         <SimpleMDE
-          onChange={c => this.props.onUpdateContent(c)}
+          onChange={c => this.props.onUpdateCurrentContent(c)}
           value={this.props.note.content}
           options={{
             autofocus: true,
