@@ -61,7 +61,7 @@ class App extends Component {
       content: "",
       timestamp: Date.now(),
     };
-    notes.push(note);
+    notes.unshift(note);
     this.setState({notes: notes});
     this.setState({current: note.id})
   }
@@ -82,7 +82,7 @@ class App extends Component {
       id: this.generateId(),
       title: "Folder",
     };
-    folders.push(folder);
+    folders.unshift(folder);
     this.setState({folders: folders});
   }
   deleteFolder(id) {
