@@ -14,8 +14,22 @@ class Sidebar extends Component {
                     current={this.props.current}
                   />);
     return (
-      <div className="list-group">
-        {notes}
+      <div>
+        <div className="btn-group mb-3" role="group">
+          <button className="btn btn-primary"
+                  onClick={() => this.props.onAddNote()}
+          >
+            <i className="fas fa-plus"></i>
+          </button>
+          <button className="btn btn-primary"
+                  onClick={() => this.props.onDeleteNote(this.props.current)}
+          >
+            <i className="fas fa-trash"></i>
+          </button>
+        </div>
+        <div className="list-group">
+          {notes}
+        </div>
       </div>
     );
   }

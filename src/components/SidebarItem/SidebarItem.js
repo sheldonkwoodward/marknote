@@ -15,7 +15,7 @@ class SidebarItem extends Component {
           <small>{this.props.note.timestamp}</small>
         </div>
         <p className="mb-1">{this.props.note.content}</p>
-        <small>{this.props.note.status}</small>
+        <small>{this.props.note.id}</small>
       </button>
     );
   }
