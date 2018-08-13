@@ -19,9 +19,14 @@ class Sidebar extends Component {
           <button className="btn btn-primary"
                   onClick={() => this.props.onAddNote()}
           >
-            <i className="fas fa-plus"></i>
+            <i className="fas fa-pen"></i>
           </button>
           <button className="btn btn-primary"
+                  onClick={() => this.props.onAddFolder()}
+          >
+            <i className="fas fa-folder"></i>
+          </button>
+          <button className="btn btn-danger"
                   onClick={() => this.props.onDeleteNote(this.props.current)}
           >
             <i className="fas fa-trash"></i>

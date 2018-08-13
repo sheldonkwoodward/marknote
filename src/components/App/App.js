@@ -43,6 +43,10 @@ class App extends Component {
     notes[this.getIndexCurrent()].content = content;
     this.setState({notes: notes});
   }
+  updateCurrentTimestamp() {
+    let notes = this.notes;
+    notes[this.getIndexCurrent()].timestamp = Date.now();
+  }
   
   // manage notes
   chooseNote(id) {
@@ -54,12 +58,15 @@ class App extends Component {
       id: this.generateId(),
       title: "",
       content: "",
-      timestamp: "timestamp",
+      timestamp: Date.now(),
 
     }
     notes.push(note);
     this.setState({notes: notes});
     this.setState({current: note.id})
+  }
+  addFolder() {
+    
   }
   deleteNote(id) {
     let notes = this.state.notes;
@@ -93,6 +100,7 @@ class App extends Component {
               notes={this.state.notes}
               onChooseNote={id => this.chooseNote(id)}
               onAddNote={() => this.addNote()}
+              onAddFolder={() => this.addFolder()}
               onDeleteNote={id => this.deleteNote(id)}
             />                      
           </div>
