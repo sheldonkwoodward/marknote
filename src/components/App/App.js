@@ -36,11 +36,16 @@ class App extends Component {
   
   // updating notes
   saveNote() {
+    if (this.state.draft.title === "") {
+      alert("Title is required");
+      return;
+    }
     let draft = this.state.draft;
     let notes = this.state.notes;
+    let note = this.state.notes[this.getIndexCurrent()];
     draft.timestamp = Date.now();
     if (this.getIndexCurrent() === null) {
-      notes.unshift(draft);
+      notes.unshift(Object.assign({}, draft));
     } else {
       notes[this.getIndexCurrent()] = draft;
     }

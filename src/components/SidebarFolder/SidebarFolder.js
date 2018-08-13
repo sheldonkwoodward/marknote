@@ -3,7 +3,7 @@ import './SidebarFolder.css';
 
 
 class SidebarFolder extends Component {
-  render() {    
+  render() {
     return (      
       <button onClick={() => this.props.onChooseFolder(this.props.folder.id)}
               className="list-group-item list-group-item-action

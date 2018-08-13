@@ -7,9 +7,9 @@ import SidebarFolder from '../SidebarFolder/SidebarFolder';
 
 class Sidebar extends Component {
   sortNotes(a, b) {
-    if (a.timestamp > b.timestamp)
-      return -1;
     if (a.timestamp < b.timestamp)
+      return -1;
+    if (a.timestamp > b.timestamp)
       return 1;
     return 0;
   }
@@ -20,7 +20,6 @@ class Sidebar extends Component {
       return 1;
     return 0;
   }
-  
   render() {
     const notes = this.props.notes.map((n) => 
                   <SidebarItem
@@ -58,7 +57,7 @@ class Sidebar extends Component {
             <i className="fas fa-moon"></i>
           </button>
           <button className="btn btn-primary">
-            <i className="fas fa-eye"></i>
+            <i className="fas fa-book-open"></i>
           </button>
         </div>
         <div className="list-group mb-3">
