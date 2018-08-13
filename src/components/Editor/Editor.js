@@ -10,15 +10,29 @@ class Editor extends Component {
     return (
       <div>
         <form>
-          <div className="form-group">
-            <input
-              onChange={t => this.props.onUpdateCurrentTitle(t.target.value)}
-              value={this.props.note.title}
-              type="text"
-              className="form-control form-control-lg"
-              placeholder="Title"
-              maxLength="20"
-            />
+          <div className="form-row">
+            <div className="form-group col mr-2">
+              <input
+                onChange={t => this.props.onUpdateCurrentTitle(t.target.value)}
+                value={this.props.note.title}
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="Title"
+                maxLength="20"
+              />
+            </div>
+            <div className="btn-group form-group">
+              <button className="btn btn-lg btn-primary"
+                      onClick={() => this.props.onDeleteNote(this.props.current)}
+              >
+                <i className="fas fa-copy"></i>
+              </button>
+              <button className="btn btn-lg btn-danger"
+                      onClick={() => this.props.onDeleteNote(this.props.current)}
+              >
+                <i className="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
         </form>
         <SimpleMDE

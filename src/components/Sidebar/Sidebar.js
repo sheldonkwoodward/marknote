@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Sidebar.css';
 
 import SidebarItem from '../SidebarItem/SidebarItem';
+import SidebarFolder from '../SidebarFolder/SidebarFolder';
 
 
 class Sidebar extends Component {
@@ -12,6 +13,12 @@ class Sidebar extends Component {
                     note={n}
                     onChooseNote={id => this.props.onChooseNote(id)}
                     current={this.props.current}
+                  />);
+    const folders = this.props.folders.map((f) => 
+                  <SidebarFolder
+                    key={f.id}
+                    folder={f}
+                    onChooseFolder={id => this.props.onChooseNote(id)}
                   />);
     return (
       <div>
@@ -26,11 +33,9 @@ class Sidebar extends Component {
           >
             <i className="fas fa-folder"></i>
           </button>
-          <button className="btn btn-danger"
-                  onClick={() => this.props.onDeleteNote(this.props.current)}
-          >
-            <i className="fas fa-trash"></i>
-          </button>
+        </div>
+        <div className="list-group mb-3">
+          {folders}
         </div>
         <div className="list-group">
           {notes}

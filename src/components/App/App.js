@@ -12,6 +12,7 @@ class App extends Component {
     this.state = {
       current: null,
       notes: [],
+      folders: [],
     }
   }
   // indexing
@@ -59,20 +60,33 @@ class App extends Component {
       title: "",
       content: "",
       timestamp: Date.now(),
-
-    }
+    };
     notes.push(note);
     this.setState({notes: notes});
     this.setState({current: note.id})
-  }
-  addFolder() {
-    
   }
   deleteNote(id) {
     let notes = this.state.notes;
     this.setState({current: null});
     notes.splice(this.getIndexById(id), 1);
     this.setState({notes: notes});
+  }
+  
+  // manage folders
+  chooseFolder(id) {
+    
+  }
+  addFolder() {
+    let folders = this.state.folders;
+    let folder = {
+      id: this.generateId(),
+      title: "Folder",
+    };
+    folders.push(folder);
+    this.setState({folders: folders});
+  }
+  deleteFolder(id) {
+    
   }
   
   // render
@@ -86,7 +100,8 @@ class App extends Component {
                     onUpdateCurrentContent={c => this.updateCurrentContent(c)}
                   />
                 </div>
-    }  
+    }
+    
     return (
       <div className="container">
         <div className="row">
@@ -98,10 +113,13 @@ class App extends Component {
             <Sidebar
               current={this.state.current}
               notes={this.state.notes}
+              folders={this.state.folders}
               onChooseNote={id => this.chooseNote(id)}
               onAddNote={() => this.addNote()}
-              onAddFolder={() => this.addFolder()}
               onDeleteNote={id => this.deleteNote(id)}
+              onChooseFolder={id => this.chooseFolder(id)}
+              onAddFolder={() => this.addFolder()}
+              onDeleteFolder={id => this.deleteFolder(id)}
             />                      
           </div>
           {editor}
