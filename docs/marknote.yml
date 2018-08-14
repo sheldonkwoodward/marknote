@@ -2,35 +2,12 @@ swagger: '2.0'
 info:
   version: 1.0.0
   title: MarkNote Documentation
-  description: A Markdown note taking tool for managing personal information and documentation. It is designed to be
-    connected to a note management API. It implements the react-simplemde-editor.
+  description: A Markdown note taking tool for managing personal information and documentation. It is designed to be connected to a note management API. It implements the react-simplemde-editor.
 schemes:
 - http
 host: 'localhost:8000'
 basePath: /marknote
 paths:
-  /browse:
-    get:
-      summary: Retrieve all contents of a folder
-      description: Summary of all notes and folders with query parameters for specifying non-base folder.
-      tags:
-       - browse
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: A top level JSON array with the keys "notes" and "folders" containing their respective JSON objects.
-          schema:
-            type: object
-            properties:
-              notes:
-                type: array
-                items:
-                  $ref: "#/definitions/NoteSummary"
-              folders:
-                type: array
-                items:
-                  $ref: "#/definitions/FolderSummary"
   /note:
     post:
       summary: Create a note
@@ -129,12 +106,106 @@ paths:
       parameters: 
       - name: id
         in: path
-        description: The ID of the note to update.
+        description: The ID of the note to delete.
         required: true
         type: string
       responses:
         204:
           description: The note was deleted successfully.
+  /folder:
+    post:
+      summary: Create a folder
+      description: A request to create a folder.
+      tags:
+      - folder
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: title
+        in: formData
+        description: The title of the new folder.
+        required: true
+        type: string
+      - name: folderId
+        in: formData
+        description: The folder to put the folder in.
+        required: false
+        type: string
+      responses:
+        200:
+          description: The folder was created successfully.
+          schema:
+            $ref: "#/definitions/Folder"
+  /folder/{id}:
+    get:
+      summary: Retrieve a folder
+      description: A request to retrieve a folder.
+      tags:
+      - folder
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the folder to retrieve
+        required: true
+        type: string
+      responses:
+        200:
+          description: The folder was retrieved successfully.
+          schema:
+            type: object
+            properties:
+              note:
+                $ref: "#/definitions/Folder"
+    put:
+      summary: Update a folder
+      description: A request to update a folder.
+      tags:
+      - folder
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the folder to update.
+        required: true
+        type: string
+      - name: title
+        in: formData
+        description: The new title of the note
+        required: false
+        type: string
+      - name: folderId
+        in: formData
+        description: The new folder of the note
+        required: false
+        type: string
+      responses:
+        200:
+          description: The folder was updated successfully.
+          schema:
+            $ref: "#/definitions/Folder"
+    delete:
+      summary: Delete a folder
+      description: A request to delete a folder.
+      tags:
+      - folder
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the folder to delete.
+        required: true
+        type: string
+      responses:
+        204:
+          description: The folder was deleted successfully.
 definitions:
   Note:
     type: object
