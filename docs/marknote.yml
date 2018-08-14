@@ -39,6 +39,10 @@ paths:
           description: The note was created successfully.
           schema:
             $ref: "#/definitions/Note"
+        400:
+          description: The note could not be created as specified.
+        401:
+          description: The user is not authenticated.
   /note/{id}:
     get:
       summary: Retrieve a note
@@ -47,7 +51,7 @@ paths:
       - note
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the note to retrieve
@@ -61,6 +65,10 @@ paths:
             properties:
               note:
                 $ref: "#/definitions/Note"
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The note could not be found.
     put:
       summary: Update a note
       description: A request to update a note.
@@ -70,7 +78,7 @@ paths:
       - "application/x-www-form-urlencoded"
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the note to update.
@@ -96,6 +104,12 @@ paths:
           description: The note was updated successfully.
           schema:
             $ref: "#/definitions/Note"
+        400:
+          description: The note could not be updated as specified.
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The note could note be found.
     delete:
       summary: Delete a note
       description: A request to delete a note.
@@ -103,7 +117,7 @@ paths:
       - note
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the note to delete.
@@ -112,6 +126,10 @@ paths:
       responses:
         204:
           description: The note was deleted successfully.
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The note could note be found.
   /folder:
     post:
       summary: Create a folder
@@ -138,6 +156,10 @@ paths:
           description: The folder was created successfully.
           schema:
             $ref: "#/definitions/Folder"
+        400:
+          description: The folder could not be created as specified.
+        401:
+          description: The user is not authenticated.
   /folder/{id}:
     get:
       summary: Retrieve a folder
@@ -146,7 +168,7 @@ paths:
       - folder
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the folder to retrieve
@@ -160,6 +182,10 @@ paths:
             properties:
               note:
                 $ref: "#/definitions/Folder"
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The folder could not be found.
     put:
       summary: Update a folder
       description: A request to update a folder.
@@ -169,7 +195,7 @@ paths:
       - "application/x-www-form-urlencoded"
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the folder to update.
@@ -190,6 +216,12 @@ paths:
           description: The folder was updated successfully.
           schema:
             $ref: "#/definitions/Folder"
+        400:
+          description: The folder could not be updated as specified.
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The folder could note be found.
     delete:
       summary: Delete a folder
       description: A request to delete a folder.
@@ -197,7 +229,7 @@ paths:
       - folder
       produces:
       - "application/json"
-      parameters: 
+      parameters:
       - name: id
         in: path
         description: The ID of the folder to delete.
@@ -206,6 +238,10 @@ paths:
       responses:
         204:
           description: The folder was deleted successfully.
+        401:
+          description: The user is not authenticated.
+        404:
+          description: The folder could note be found.
 definitions:
   Note:
     type: object
