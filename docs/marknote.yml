@@ -1,0 +1,117 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: MarkNote Documentation
+  description: A Markdown note taking tool for managing personal information and documentation. It is designed to be
+    connected to a note management API. It implements the react-simplemde-editor.
+schemes:
+  - http
+host: 'localhost:8000'
+basePath: /marknote
+paths:
+  /browse:
+    get:
+      summary: Retrieve all contents of a folder
+      description: Summary of all notes and folders with query parameters for specifying non-base folder.
+      tags:
+       - browse
+      responses:
+        200:
+          description: A top level JSON array with the keys "notes" and "folders" containing their respective JSON objects.
+          schema:
+            type: object
+            properties:
+              notes:
+                type: array
+                items:
+                  $ref: "#/definitions/NoteSummary"
+              folders:
+                type: array
+                items:
+                  $ref: "#/definitions/FolderSummary"
+  /note:
+    get:
+      summary: Retrieve note data
+      description: An entire note object containing all data to be displayed.
+      tags:
+       - note
+      responses:
+        200:
+          description: A JSON object with "id", "title", "content", and "timestamp" keys.
+          schema:
+            type: object
+            properties:
+              note:
+                $ref: "#/definitions/Note"
+    post:
+      summary: Create a note
+      description: A request using JSON body to create a note.
+      tags:
+       - note
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: title
+        in: formData
+        description: The title of the new note.
+        required: true
+        type: string
+      - name: content
+        in: formData
+        description: The content of the new note.
+        required: false
+        type: string
+      - name: folderId
+        in: formData
+        description: The folder to put the note in.
+        required: false
+        type: string
+      responses:
+        200:
+          description: A JSON object with the key "id" containing the ID of the new note.
+          schema:
+            $ref: "#/definitions/NewObject"
+definitions:
+  Note:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      content:
+        type: string
+      timestamp:
+        type: integer
+  NoteSummary:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+  Folder:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      notes:
+        type: array
+        items:
+          $ref: "#/definitions/NoteSummary"
+  FolderSummary:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+  NewObject:
+    type: object
+    properties:
+      id:
+        type: string
