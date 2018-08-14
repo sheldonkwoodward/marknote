@@ -5,7 +5,7 @@ info:
   description: A Markdown note taking tool for managing personal information and documentation. It is designed to be
     connected to a note management API. It implements the react-simplemde-editor.
 schemes:
-  - http
+- http
 host: 'localhost:8000'
 basePath: /marknote
 paths:
@@ -15,6 +15,8 @@ paths:
       description: Summary of all notes and folders with query parameters for specifying non-base folder.
       tags:
        - browse
+      produces:
+      - "application/json"
       responses:
         200:
           description: A top level JSON array with the keys "notes" and "folders" containing their respective JSON objects.
@@ -30,24 +32,11 @@ paths:
                 items:
                   $ref: "#/definitions/FolderSummary"
   /note:
-    get:
-      summary: Retrieve note data
-      description: An entire note object containing all data to be displayed.
-      tags:
-       - note
-      responses:
-        200:
-          description: A JSON object with "id", "title", "content", and "timestamp" keys.
-          schema:
-            type: object
-            properties:
-              note:
-                $ref: "#/definitions/Note"
     post:
       summary: Create a note
-      description: A request using JSON body to create a note.
+      description: A request to create a note.
       tags:
-       - note
+      - note
       consumes:
       - "application/x-www-form-urlencoded"
       produces:
@@ -70,9 +59,82 @@ paths:
         type: string
       responses:
         200:
-          description: A JSON object with the key "id" containing the ID of the new note.
+          description: The note was created successfully.
           schema:
-            $ref: "#/definitions/NewObject"
+            $ref: "#/definitions/Note"
+  /note/{id}:
+    get:
+      summary: Retrieve a note
+      description: A request to retrieve a note.
+      tags:
+      - note
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the note to retrieve
+        required: true
+        type: string
+      responses:
+        200:
+          description: The note was retrieved successfully.
+          schema:
+            type: object
+            properties:
+              note:
+                $ref: "#/definitions/Note"
+    put:
+      summary: Update a note
+      description: A request to update a note.
+      tags:
+      - note
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the note to update.
+        required: true
+        type: string
+      - name: title
+        in: formData
+        description: The new title of the note
+        required: false
+        type: string
+      - name: content
+        in: formData
+        description: The new content of the note
+        required: false
+        type: string
+      - name: folderId
+        in: formData
+        description: The new folder of the note
+        required: false
+        type: string
+      responses:
+        200:
+          description: The note was updated successfully.
+          schema:
+            $ref: "#/definitions/Note"
+    delete:
+      summary: Delete a note
+      description: A request to delete a note.
+      tags:
+      - note
+      produces:
+      - "application/json"
+      parameters: 
+      - name: id
+        in: path
+        description: The ID of the note to update.
+        required: true
+        type: string
+      responses:
+        204:
+          description: The note was deleted successfully.
 definitions:
   Note:
     type: object
@@ -92,6 +154,8 @@ definitions:
         type: string
       title:
         type: string
+      timestamp:
+        type: integer
   Folder:
     type: object
     properties:
@@ -103,15 +167,14 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/NoteSummary"
+      folders:
+        type: array
+        items:
+          $ref: "#/definitions/FolderSummary"
   FolderSummary:
     type: object
     properties:
       id:
         type: string
       title:
-        type: string
-  NewObject:
-    type: object
-    properties:
-      id:
         type: string
