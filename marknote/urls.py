@@ -3,5 +3,5 @@ from marknote import views
 
 
 urlpatterns = [
-    url(r'^note$', views.Note.as_view())
+    url(r'^note$', views.NoteView.as_view())
 ]
