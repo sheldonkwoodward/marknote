@@ -6,7 +6,7 @@ class Navbar extends Component {
   render() {
     return(
       <nav className="navbar navbar-dark bg-primary">
-        <a className="navbar-brand" href="#">Marknote</a>
+        <a className="navbar-brand" href="#">MarkNote</a>
       </nav>
     );
   }

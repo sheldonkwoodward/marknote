@@ -12,6 +12,7 @@ class App extends Component {
     this.state = {
       current: null,
       currentType: null,
+      currentFolder: null,
       draft: {},
       notes: [],
       folders: [],
@@ -59,6 +60,19 @@ class App extends Component {
     this.setState({draft: draft});
   }
   
+  // navigation
+  navigateBack() {
+    let currentFolder = this.state.currentFolder
+    if (currentFolder === null) {
+      return;
+    }
+    let folders = this.state.folders;
+    currentFolder = folders[this.getIndexById(currentFolder)].folderId;
+    this.setState({current: currentFolder});
+    this.setState({currentFolder: currentFolder});
+    return currentFolder;
+  }
+  
   // manage notes
   chooseNote(id) {
     let draft = this.state.notes[this.getIndexById(id)];
@@ -73,6 +87,7 @@ class App extends Component {
       title: "",
       content: "",
       timestamp: Date.now(),
+      folderId: null,
     };
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
@@ -120,6 +135,7 @@ class App extends Component {
     let draft = this.state.folders[this.getIndexById(id)];
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
+    this.setState({currentFolder: id});
     this.setState({currentType: "folder"});
   }
   addFolder() {
@@ -127,6 +143,7 @@ class App extends Component {
     let draft = {
       id: id,
       title: "",
+      folderId: this.state.currentFolder,
     };
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
@@ -144,6 +161,7 @@ class App extends Component {
     } else {
       folders[this.getIndexCurrent()] = draft;
     }
+    this.setState({current: null});
     this.setState({folders: folders});
   }
   deleteCurrentFolder() {
@@ -184,8 +202,10 @@ class App extends Component {
             <div className="col-4">
               <Sidebar
                 current={this.state.current}
+                currentFolder={this.state.currentFolder}
                 notes={this.state.notes}
                 folders={this.state.folders}
+                onNavigateBack={() => this.navigateBack()}
                 onChooseNote={id => this.chooseNote(id)}
                 onChooseFolder={id => this.chooseFolder(id)}
                 onAddNote={() => this.addNote()}

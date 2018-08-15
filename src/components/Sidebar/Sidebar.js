@@ -36,8 +36,11 @@ class Sidebar extends Component {
                     current={this.props.current}
                   />);
 
+    // sidebar options
     let folderOptions = <div></div>
-    let noteOptions = <div></div>    
+    let noteOptions = <div></div> 
+       
+    // hiding
     if (folders.length > 0) {
       folderOptions = <div>
                         <small><strong>folders</strong></small>
@@ -55,11 +58,18 @@ class Sidebar extends Component {
                     </div>
     }
     
+    // sorting
     notes.sort(this.sortNodes);
     folders.sort(this.sortFolders);
+    
     return (
       <div>
         <div className="btn-group mb-3" role="group">
+          <button className="btn btn-primary"
+                  onClick={() => this.props.onNavigateBack()}
+          >
+            <i className="fas fa-chevron-left"></i>
+          </button>          
           <button className="btn btn-primary"
                   onClick={() => this.props.onAddNote()}
           >
