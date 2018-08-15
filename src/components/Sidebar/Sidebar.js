@@ -32,7 +32,8 @@ class Sidebar extends Component {
                   <SidebarFolder
                     key={f.id}
                     folder={f}
-                    onChooseFolder={id => this.props.onChooseNote(id)}
+                    onChooseFolder={id => this.props.onChooseFolder(id)}
+                    current={this.props.current}
                   />);
     
     notes.sort(this.sortNodes);

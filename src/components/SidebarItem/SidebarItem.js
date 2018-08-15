@@ -34,12 +34,12 @@ class SidebarItem extends Component {
     
     return (      
       <a onClick={() => this.props.onChooseNote(this.props.note.id)}
-         className={buttonClass}>
+         className={buttonClass}
+      >
         <div className="d-flex w-100 justify-content-between">
           <h5 className="mb-1">{this.props.note.title}</h5>
           <small>{this.generateTimestamp()}</small>
         </div>
-        {/* <p className="mb-1">{this.props.note.content}</p> */}
         <small>/path/to/note</small>
       </a>
     );
