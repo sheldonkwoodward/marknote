@@ -80,6 +80,18 @@ class App extends Component {
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
   }
+  copyCurrentNote() {
+    this.copyNote(this.state.current);
+  }
+  copyNote(id) {
+    let notes = this.state.notes;
+    let note = Object.assign({},notes[this.getIndexById(id)]);
+    note.id = this.generateId();
+    note.title += " copy";
+    note.timestamp = Date.now();
+    notes.unshift(note);
+    this.setState({notes: notes});
+  }
   deleteCurrentNote() {
     this.deleteNote(this.state.current);
   }
@@ -115,6 +127,7 @@ class App extends Component {
                   <Editor
                     draft={this.state.draft}
                     onSaveNote={() => this.saveNote()}
+                    onCopyNote={() => this.copyCurrentNote()}
                     onDeleteNote={() => this.deleteCurrentNote()}
                     onUpdateTitle={t => this.updateTitle(t)}
                     onUpdateContent={c => this.updateContent(c)}

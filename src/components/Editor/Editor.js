@@ -29,6 +29,7 @@ class Editor extends Component {
                 <i className="fas fa-save"></i>
               </button>
               <button className="btn btn-lg btn-primary"
+                      onClick={() => this.props.onCopyNote()}
                       type="button"
               >
                 <i className="fas fa-copy"></i>
