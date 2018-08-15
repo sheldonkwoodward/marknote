@@ -35,6 +35,25 @@ class Sidebar extends Component {
                     onChooseFolder={id => this.props.onChooseFolder(id)}
                     current={this.props.current}
                   />);
+
+    let folderOptions = <div></div>
+    let noteOptions = <div></div>    
+    if (folders.length > 0) {
+      folderOptions = <div>
+                        <small><strong>folders</strong></small>
+                        <div className="list-group mb-3">
+                          {folders}
+                        </div>
+                      </div>
+    }
+    if (notes.length > 0) {
+      noteOptions = <div>
+                      <small><strong>notes</strong></small>
+                      <div className="list-group">
+                        {notes}
+                      </div>
+                    </div>
+    }
     
     notes.sort(this.sortNodes);
     folders.sort(this.sortFolders);
@@ -61,12 +80,8 @@ class Sidebar extends Component {
             <i className="fas fa-book-open"></i>
           </button>
         </div>
-        <div className="list-group mb-3">
-          {folders}
-        </div>
-        <div className="list-group">
-          {notes}
-        </div>
+        {folderOptions}
+        {noteOptions}
       </div>
     );
   }

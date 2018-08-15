@@ -61,7 +61,6 @@ class App extends Component {
   
   // manage notes
   chooseNote(id) {
-    console.log("chooseNote()");
     let draft = this.state.notes[this.getIndexById(id)];
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
@@ -118,7 +117,6 @@ class App extends Component {
   
   // manage folders
   chooseFolder(id) {
-    console.log("chooseFolder()");
     let draft = this.state.folders[this.getIndexById(id)];
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
