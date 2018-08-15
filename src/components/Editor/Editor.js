@@ -23,19 +23,18 @@ class Editor extends Component {
             </div>
             <div className="btn-group form-group">
               <button className="btn btn-lg btn-primary"
-                      onClick={() => this.props.onSaveNote(this.props.draft)}
+                      onClick={() => this.props.onSaveNote()}
                       type="button"
               >
                 <i className="fas fa-save"></i>
               </button>
               <button className="btn btn-lg btn-primary"
-                      // onClick={() => this.props.onDeleteNote(this.props.current)}
                       type="button"
               >
                 <i className="fas fa-copy"></i>
               </button>
               <button className="btn btn-lg btn-danger"
-                      // onClick={() => this.props.onDeleteNote(this.props.current)}
+                      onClick={() => this.props.onDeleteNote()}
                       type="button"
               >
                 <i className="fas fa-trash"></i>

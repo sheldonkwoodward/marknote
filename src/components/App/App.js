@@ -16,6 +16,7 @@ class App extends Component {
       folders: [],
     }
   }
+  
   // indexing
   getIndexById(id) {
     for (let i in this.state.notes) {
@@ -79,6 +80,9 @@ class App extends Component {
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
   }
+  deleteCurrentNote() {
+    this.deleteNote(this.state.current);
+  }
   deleteNote(id) {
     let notes = this.state.notes;
     this.setState({current: null});
@@ -111,6 +115,7 @@ class App extends Component {
                   <Editor
                     draft={this.state.draft}
                     onSaveNote={() => this.saveNote()}
+                    onDeleteNote={() => this.deleteCurrentNote()}
                     onUpdateTitle={t => this.updateTitle(t)}
                     onUpdateContent={c => this.updateContent(c)}
                   />
@@ -133,7 +138,6 @@ class App extends Component {
               onChooseFolder={id => this.chooseFolder(id)}
               onAddNote={() => this.addNote()}
               onAddFolder={() => this.addFolder()}
-              onDeleteNote={id => this.deleteNote(id)}
               onDeleteFolder={id => this.deleteFolder(id)}
             />                      
           </div>
