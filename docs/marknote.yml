@@ -29,7 +29,7 @@ paths:
         description: The content of the new note.
         required: false
         type: string
-      - name: folderId
+      - name: containerId
         in: formData
         description: The folder to put the note in.
         required: false
@@ -94,7 +94,7 @@ paths:
         description: The new content of the note
         required: false
         type: string
-      - name: folderId
+      - name: containerId
         in: formData
         description: The new folder of the note
         required: false
@@ -146,7 +146,7 @@ paths:
         description: The title of the new folder.
         required: true
         type: string
-      - name: folderId
+      - name: containerId
         in: formData
         description: The folder to put the folder in.
         required: false
@@ -206,7 +206,7 @@ paths:
         description: The new title of the note
         required: false
         type: string
-      - name: folderId
+      - name: containerId
         in: formData
         description: The new folder of the note
         required: false
@@ -254,6 +254,8 @@ definitions:
         type: string
       timestamp:
         type: integer
+      containerId:
+        type: string
   NoteSummary:
     type: object
     properties:
@@ -263,12 +265,16 @@ definitions:
         type: string
       timestamp:
         type: integer
+      containerId:
+        type: string
   Folder:
     type: object
     properties:
       id:
         type: string
       title:
+        type: string
+      containerId:
         type: string
       notes:
         type: array
@@ -284,4 +290,6 @@ definitions:
       id:
         type: string
       title:
+        type: string
+      containerId:
         type: string
