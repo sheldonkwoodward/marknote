@@ -16,6 +16,7 @@ class App extends Component {
       draft: {},
       notes: [],
       folders: [],
+      visibleFolders: [],
     }
   }
   
@@ -71,6 +72,10 @@ class App extends Component {
     this.setState({current: currentFolder});
     this.setState({currentFolder: currentFolder});
     return currentFolder;
+  }
+  navigateForward(id) {
+    this.setState({current: null});
+    this.setState({currentFolder: id}); 
   }
   
   // manage notes
@@ -135,7 +140,6 @@ class App extends Component {
     let draft = this.state.folders[this.getIndexById(id)];
     this.setState({draft: Object.assign({}, draft)});
     this.setState({current: id});
-    this.setState({currentFolder: id});
     this.setState({currentType: "folder"});
   }
   addFolder() {
@@ -206,6 +210,7 @@ class App extends Component {
                 notes={this.state.notes}
                 folders={this.state.folders}
                 onNavigateBack={() => this.navigateBack()}
+                onNavigateForward={id => this.navigateForward(id)}
                 onChooseNote={id => this.chooseNote(id)}
                 onChooseFolder={id => this.chooseFolder(id)}
                 onAddNote={() => this.addNote()}

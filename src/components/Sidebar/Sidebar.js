@@ -33,6 +33,7 @@ class Sidebar extends Component {
                     key={f.id}
                     folder={f}
                     onChooseFolder={id => this.props.onChooseFolder(id)}
+                    onNavigateForward={id => this.props.onNavigateForward(id)}
                     current={this.props.current}
                   />);
 
