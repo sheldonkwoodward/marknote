@@ -65,10 +65,14 @@ paths:
         200:
           description: The notes were retrieved successfully.
           schema:
-            notes:
-              type: array
-              schema:
-                $ref: "#/definitions/Note"
+            type: object
+            properties:
+              notes:
+                type: array
+                items:
+                  $ref: "#/definitions/NoteSummary"
+        401:
+          description: The user is not authenticated.
   /note/{id}:
     get:
       summary: Retrieve a note
@@ -186,6 +190,31 @@ paths:
           description: The folder could not be created as specified.
         401:
           description: The user is not authenticated.
+    get:
+      summary: Retrieve all folders
+      description: A request to retrieve all notes and filter with query paramters.
+      tags:
+      - folder
+      produces:
+      - "application/json"
+      parameters:
+      - name: title
+        in: query
+        description: The title to search for and filter by.
+        required: false
+        type: string
+      responses:
+        200:
+          description: The folders were retrieved successfully.
+          schema:
+            type: object
+            properties:
+              folders:
+                type: array
+                items:
+                  $ref: "#/definitions/FolderSummary"
+        401:
+          description: The user is not authenticated.
   /folder/{id}:
     get:
       summary: Retrieve a folder
@@ -279,7 +308,7 @@ definitions:
       content:
         type: string
       timestamp:
-        type: integer
+        type: string
       containerId:
         type: string
   NoteSummary:
@@ -290,7 +319,7 @@ definitions:
       title:
         type: string
       timestamp:
-        type: integer
+        type: string
       containerId:
         type: string
   Folder:
