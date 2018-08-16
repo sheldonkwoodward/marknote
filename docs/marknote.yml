@@ -43,6 +43,32 @@ paths:
           description: The note could not be created as specified.
         401:
           description: The user is not authenticated.
+    get:
+      summary: Retrieve all notes
+      description: A request to retrieve all notes and filter with query paramters.
+      tags:
+      - note
+      produces:
+      - "application/json"
+      parameters:
+      - name: title
+        in: query
+        description: The title to search for and filter by.
+        required: false
+        type: string
+      - name: content
+        in: query
+        description: The content to search for and filter by.
+        required: false
+        type: string
+      responses:
+        200:
+          description: The notes were retrieved successfully.
+          schema:
+            notes:
+              type: array
+              schema:
+                $ref: "#/definitions/Note"
   /note/{id}:
     get:
       summary: Retrieve a note
