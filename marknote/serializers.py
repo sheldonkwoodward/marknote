@@ -7,7 +7,7 @@ class NoteSerializer(ModelSerializer):
     class Meta:
         model = Note
         fields = (
-            'id',
+            'pk',
             'title',
             'content',
             'containerId',
@@ -20,7 +20,7 @@ class FolderSerializer(ModelSerializer):
     class Meta:
         model = Folder
         fields = (
-            'id',
+            'pk',
             'title',
             'containerId',
             'created',
