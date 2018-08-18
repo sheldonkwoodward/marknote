@@ -2,12 +2,12 @@ from django.db.models import Q
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from marknote.models import Note, Folder
-from marknote.serializers import NoteSerializer, FolderSerializer
+from marknote import serializers
 
 
 class NoteListCreateView(ListCreateAPIView):
     lookup_field = 'pk'
-    serializer_class = NoteSerializer
+    serializer_class = serializers.NoteSummarySerializer
 
     def get_queryset(self):
         qs = Note.objects.all()
@@ -22,5 +22,23 @@ class NoteListCreateView(ListCreateAPIView):
 
 class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'pk'
-    serializer_class = NoteSerializer
+    serializer_class = serializers.NoteSerializer
     queryset = Note.objects.all()
+
+
+class FolderListCreateView(ListCreateAPIView):
+    lookup_field = 'pk'
+    serializer_class = serializers.FolderSummarySerializer
+
+    def get_queryset(self):
+        qs = Folder.objects.all()
+        query = self.request.GET.get('search')
+        if query is not None:
+            qs = qs.filter(Q(title__icontains=query)).distinct()
+        return qs
+
+
+class FolderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    lookup_field = 'pk'
+    serializer_class = serializers.FolderSerializer
+    queryset = Folder.objects.all()

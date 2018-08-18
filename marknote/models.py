@@ -2,9 +2,7 @@ from django.db import models
 
 
 class Base(models.Model):
-    id = models.CharField(primary_key=True, max_length=36)
     title = models.CharField(max_length=30)
-    containerId = models.ForeignKey('Folder', on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -13,13 +11,16 @@ class Base(models.Model):
         ordering = ['title', '-updated']
 
 
+class Folder(Base):
+    containerId = models.ForeignKey('self', related_name='folders', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        db_table = 'marknote_folders'
+
+
 class Note(Base):
-    content = models.TextField(null=True)
+    containerId = models.ForeignKey(Folder, related_name='notes', on_delete=models.CASCADE, null=True)
+    content = models.TextField()
 
     class Meta:
         db_table = 'marknote_notes'
-
-
-class Folder(Base):
-    class Meta:
-        db_table = 'marknote_folders'
