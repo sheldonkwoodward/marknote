@@ -11,12 +11,21 @@ class NoteListCreateView(ListCreateAPIView):
 
     def get_queryset(self):
         qs = Note.objects.all()
+        # general search
         query = self.request.GET.get('search')
         if query is not None:
             qs = qs.filter(
                 Q(title__icontains=query) |
                 Q(content__icontains=query)
             ).distinct()
+        # title search
+        query = self.request.GET.get('title')
+        if query is not None:
+            qs = qs.filter(title__icontains=query)
+        # content search
+        query = self.request.GET.get('content')
+        if query is not None:
+            qs = qs.filter(content__icontains=query)
         return qs
 
 
@@ -34,7 +43,10 @@ class FolderListCreateView(ListCreateAPIView):
         qs = Folder.objects.all()
         query = self.request.GET.get('search')
         if query is not None:
-            qs = qs.filter(Q(title__icontains=query)).distinct()
+            qs = qs.filter(title__icontains=query)
+        query = self.request.GET.get('title')
+        if query is not None:
+            qs = qs.filter(title__icontains=query)
         return qs
 
 
