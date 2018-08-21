@@ -1,11 +1,15 @@
 from django.db.models import Q
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from marknote.models import Note, Folder
 from marknote import serializers
+from marknote.models import Note, Folder
 
 
 class NoteListCreateView(ListCreateAPIView):
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.NoteSummarySerializer
 
@@ -30,12 +34,16 @@ class NoteListCreateView(ListCreateAPIView):
 
 
 class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.NoteSerializer
     queryset = Note.objects.all()
 
 
 class FolderListCreateView(ListCreateAPIView):
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.FolderSummarySerializer
 
@@ -51,6 +59,8 @@ class FolderListCreateView(ListCreateAPIView):
 
 
 class FolderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.FolderSerializer
     queryset = Folder.objects.all()
