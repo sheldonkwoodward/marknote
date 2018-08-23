@@ -1,9 +1,26 @@
 from rest_framework import serializers
+from rest_framework.serializers import unicode_to_repr
 
 from marknote.models import Note, Folder
 
 
+class CurrentUserDefault:
+    def __init__(self):
+        self.user_id = None
+
+    def __call__(self):
+        return self.user_id
+
+    def __repr__(self):
+        return unicode_to_repr('%s()' % self.__class__.__name__)
+
+    def set_context(self, serializer_field):
+        self.user_id = serializer_field.context['request'].user.id
+
+
 class NoteSummarySerializer(serializers.ModelSerializer):
+    owner_id = serializers.HiddenField(default=CurrentUserDefault())
+
     class Meta:
         model = Note
         fields = (
@@ -12,6 +29,7 @@ class NoteSummarySerializer(serializers.ModelSerializer):
             'containerId',
             'created',
             'updated',
+            'owner_id',
         )
 
 
@@ -29,6 +47,8 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class FolderSummarySerializer(serializers.ModelSerializer):
+    owner_id = serializers.HiddenField(default=CurrentUserDefault())
+
     class Meta:
         model = Folder
         fields = (
@@ -37,6 +57,7 @@ class FolderSummarySerializer(serializers.ModelSerializer):
             'containerId',
             'created',
             'updated',
+            'owner_id',
         )
 
 
