@@ -19,6 +19,7 @@ class CurrentUserDefault:
 
 
 class NoteSummarySerializer(serializers.ModelSerializer):
+    content = serializers.CharField(write_only=True, allow_blank=True)
     owner_id = serializers.HiddenField(default=CurrentUserDefault())
 
     class Meta:
@@ -26,6 +27,7 @@ class NoteSummarySerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'title',
+            'content',
             'containerId',
             'created',
             'updated',
