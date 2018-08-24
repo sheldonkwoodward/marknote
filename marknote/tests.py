@@ -63,7 +63,9 @@ class TestNotePost(APITestCase):
         self.assertEqual(response_body['created'], note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
         self.assertEqual(response_body['updated'], note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
 
-    # TODO: test_create_in_folder
-    # TODO: test_create_only_title
-    # TODO: test_create_no_title
-    # TODO: test_user_not_authenticated
+    # TODO: test creating a note in a folder
+    # TODO: test creating a note with only a title
+    # TODO: test creating a note without a title
+    # TODO: test a non-authenticated user
+    # TODO: test a user without permissions
+    # TODO: test a user with permissions
