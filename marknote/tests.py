@@ -1,8 +1,8 @@
 from django.contrib.auth.models import Group, Permission, User
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 
-from datetime import datetime
 import json
 
 from marknote.models import Note
@@ -13,8 +13,8 @@ class TestNotePost(APITestCase):
     Test cases for POSTs on '/marknote/note'.
     """
     def setUp(self):
-        # TODO: use reverse() to get URI
-        self.uri = '/marknote/note'
+        # determine endpoint uri
+        self.uri = reverse('marknote:note-list-create')
         # create test user
         self.username = 'test'
         self.password = 'test'
@@ -25,7 +25,6 @@ class TestNotePost(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
         self.user.user_permissions.add(Permission.objects.get(codename='view_note'))
         # log in test client
-        self.client = APIClient()
         self.client.login(username=self.username, password=self.password)
 
     def test_create_db_entry(self):
