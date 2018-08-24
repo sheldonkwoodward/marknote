@@ -1,50 +1,67 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, Permission, User
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from marknote.models import Note
+
+from datetime import datetime
 import json
 
+from marknote.models import Note
 
-class NotePost(APITestCase):
+
+class TestNotePost(APITestCase):
     """
     Test cases for POSTs on '/marknote/note'.
     """
     def setUp(self):
         # TODO: use reverse() to get URI
         self.uri = '/marknote/note'
+        # create test user
         self.username = 'test'
         self.password = 'test'
         self.user = User.objects.create_user(username=self.username, password=self.password)
+        # permissions
+        self.user.user_permissions.add(Permission.objects.get(codename='add_note'))
+        self.user.user_permissions.add(Permission.objects.get(codename='change_note'))
+        self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
+        self.user.user_permissions.add(Permission.objects.get(codename='view_note'))
+        # log in test client
         self.client = APIClient()
+        self.client.login(username=self.username, password=self.password)
 
-    def test_create_note(self):
+    def test_create_db_entry(self):
         """
-        Creates a note with a title and content.
+        Tests that a note was properly added to the database.
         """
         # create note
-        self.client.login(username=self.username, password=self.password)
+        body = {
+            'title': 'title',
+            'content': 'content',
+        }
+        self.client.post(self.uri, body, format='json')
+        note = Note.objects.get(title=body['title'], content=body['content'])
+        # test database
+        self.assertEqual(body['title'], note.title)
+        self.assertEqual(body['content'], note.content)
+
+    def test_post_response(self):
+        """
+        Tests that a note is returned properly in the response.
+        """
+        # create note
         body = {
             'title': 'title',
             'content': 'content',
         }
         response = self.client.post(self.uri, body, format='json')
         response_body = json.loads(response.content)
-
-        # check response status code
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # check database
-        try:
-            note = Note.objects.get(title=body['title'], content=body['content'])
-        except Note.DoesNotExist:
-            self.fail('Did not create note properly.')
-
-        # check response body
-        self.assertEqual(response_body['id'], note.id)
+        note = Note.objects.get(title=body['title'], content=body['content'])
+        # assertions
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response_body['pk'], note.id)
         self.assertEqual(response_body['title'], body['title'])
-        self.assertEqual(response_body['content'], body['content'])
-        self.assertEqual(response_body['timestamp'], note.timestamp)
         self.assertEqual(response_body['containerId'], None)
+        self.assertEqual(response_body['created'], note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+        self.assertEqual(response_body['updated'], note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
 
     # TODO: test_create_in_folder
     # TODO: test_create_only_title
