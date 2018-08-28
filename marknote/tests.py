@@ -27,24 +27,9 @@ class TestNotePost(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
-    def test_create_db_entry(self):
+    def test_note_create_basic(self):
         """
         Tests that a note was properly added to the database.
-        """
-        # create note
-        body = {
-            'title': 'title',
-            'content': 'content',
-        }
-        self.client.post(self.uri, body, format='json')
-        note = Note.objects.get(title=body['title'], content=body['content'])
-        # test database
-        self.assertEqual(body['title'], note.title)
-        self.assertEqual(body['content'], note.content)
-
-    def test_post_response(self):
-        """
-        Tests that a note is returned properly in the response.
         """
         # create note
         body = {
@@ -54,7 +39,10 @@ class TestNotePost(APITestCase):
         response = self.client.post(self.uri, body, format='json')
         response_body = json.loads(response.content)
         note = Note.objects.get(title=body['title'], content=body['content'])
-        # assertions
+        # test database
+        self.assertEqual(body['title'], note.title)
+        self.assertEqual(body['content'], note.content)
+        # test response
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response_body['pk'], note.id)
         self.assertEqual(response_body['title'], body['title'])
