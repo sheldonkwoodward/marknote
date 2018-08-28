@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Permission, User
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 
 import json
 
@@ -111,6 +111,42 @@ class TestNotePost(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # TODO: test a non-authenticated user
-    # TODO: test a user without permissions
-    # TODO: test a user with permissions
+    def test_note_create_not_authenticated(self):
+        """
+        Tests that a note is not created when the user is not authenticated.
+        """
+        # create unauthenticated client
+        client = APIClient()
+        # create note
+        body = {
+            'title': 'title',
+            'content': 'content',
+        }
+        response = client.post(reverse('marknote:note-list-create'), body, format='json')
+        notes = Note.objects.all()
+        # test database
+        self.assertEqual(len(notes), 0)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_note_create_not_authorized(self):
+        """
+        Tests that a note is not created when when the user is authenticated but not authorized.
+        """
+        # create unauthorized user
+        username = 'unauthorized'
+        password = 'unauthorized'
+        User.objects.create_user(username=username, password=password)
+        client = APIClient()
+        client.login(username=username, password=password)
+        # create note
+        body = {
+            'title': 'title',
+            'content': 'content',
+        }
+        response = client.post(reverse('marknote:note-list-create'), body, format='json')
+        notes = Note.objects.all()
+        # test database
+        self.assertEqual(len(notes), 0)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
