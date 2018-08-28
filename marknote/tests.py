@@ -8,9 +8,9 @@ import json
 from marknote.models import Folder, Note
 
 
-class TestNotePost(APITestCase):
+class TestNoteLCPost(APITestCase):
     """
-    Test cases for POSTs on '/marknote/note'.
+    Test cases for POST requests on NoteListCreateView.
     """
     def setUp(self):
         # create test user
@@ -145,3 +145,19 @@ class TestNotePost(APITestCase):
         self.assertEqual(len(notes), 0)
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TestNoteLCGet(APITestCase):
+    """
+    Test cases for GET requests on NoteListCreateView.
+    """
+    def setUp(self):
+        # create test user
+        self.username = 'test'
+        self.password = 'test'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        # permissions
+        self.user.user_permissions.add(Permission.objects.get(codename='view_note'))
+        self.user.user_permissions.add(Permission.objects.get(codename='view_folder'))
+        # log in test client
+        self.client.login(username=self.username, password=self.password)
