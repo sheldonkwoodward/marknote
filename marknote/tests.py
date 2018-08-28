@@ -29,9 +29,9 @@ class TestNotePost(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
-    def test_note_create_basic(self):
+    def test_note_create(self):
         """
-        Tests that a basic note was properly created.
+        Tests that a note was properly created.
         """
         # create note
         body = {
@@ -81,7 +81,36 @@ class TestNotePost(APITestCase):
         # test database against note_response
         self.assertEqual(note.container.id, note_response_body['pk'])
 
-    # TODO: test creating a note without a title
+    def test_note_create_no_title(self):
+        """
+        Tests that a note is not created without a title.
+        """
+        # create note
+        body = {
+            'content': 'content',
+        }
+        response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
+        notes = Note.objects.all()
+        # test database
+        self.assertEqual(len(notes), 0)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_note_create_no_content(self):
+        """
+        Tests that a note is not created without content.
+        """
+        # create note
+        body = {
+            'title': 'title',
+        }
+        response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
+        notes = Note.objects.all()
+        # test database
+        self.assertEqual(len(notes), 0)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     # TODO: test a non-authenticated user
     # TODO: test a user without permissions
     # TODO: test a user with permissions
