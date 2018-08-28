@@ -44,6 +44,7 @@ class TestNotePost(APITestCase):
         # test database
         self.assertEqual(body['title'], note.title)
         self.assertEqual(body['content'], note.content)
+        self.assertEqual(self.user, note.owner)
         # test response
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response_body['pk'], note.id)
