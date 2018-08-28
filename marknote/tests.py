@@ -19,13 +19,7 @@ class TestNotePost(APITestCase):
         self.user = User.objects.create_user(username=self.username, password=self.password)
         # permissions
         self.user.user_permissions.add(Permission.objects.get(codename='add_note'))
-        self.user.user_permissions.add(Permission.objects.get(codename='change_note'))
-        self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
-        self.user.user_permissions.add(Permission.objects.get(codename='view_note'))
         self.user.user_permissions.add(Permission.objects.get(codename='add_folder'))
-        self.user.user_permissions.add(Permission.objects.get(codename='change_folder'))
-        self.user.user_permissions.add(Permission.objects.get(codename='delete_folder'))
-        self.user.user_permissions.add(Permission.objects.get(codename='view_folder'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
