@@ -161,3 +161,12 @@ class TestNoteLCGet(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='view_folder'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
+
+    # TODO: test get no notes
+    # TODO: test get multiple notes
+    # TODO: test filter by title
+    # TODO: test filter by content
+    # TODO: test filter by title and content
+    # TODO: test show only owned notes
+    # TODO: test not authenticated
+    # TODO: test not authorized
