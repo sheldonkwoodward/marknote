@@ -28,7 +28,7 @@ class NoteSummarySerializer(serializers.ModelSerializer):
             'pk',
             'title',
             'content',
-            'containerId',
+            'container',
             'created',
             'updated',
             'owner_id',
@@ -42,7 +42,7 @@ class NoteSerializer(serializers.ModelSerializer):
             'pk',
             'title',
             'content',
-            'containerId',
+            'container',
             'created',
             'updated',
         )
@@ -56,7 +56,7 @@ class FolderSummarySerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'title',
-            'containerId',
+            'container',
             'created',
             'updated',
             'owner_id',
@@ -72,7 +72,7 @@ class FolderSerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'title',
-            'containerId',
+            'container',
             'notes',
             'folders',
             'created',
