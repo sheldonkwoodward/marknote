@@ -156,9 +156,6 @@ class TestNoteLCGet(APITestCase):
         self.username = 'test'
         self.password = 'test'
         self.user = User.objects.create_user(username=self.username, password=self.password)
-        # permissions
-        self.user.user_permissions.add(Permission.objects.get(codename='view_note'))
-        self.user.user_permissions.add(Permission.objects.get(codename='view_folder'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
@@ -275,23 +272,6 @@ class TestNoteLCGet(APITestCase):
         """
         # create unauthenticated client
         client = APIClient()
-        # request
-        response = client.get(reverse('marknote:note-list-create'))
-        response_body = json.loads(response.content)
-        # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse('notes' in response_body)
-
-    def test_note_create_not_authorized(self):
-        """
-        Tests that a note is not created when when the user is authenticated but not authorized.
-        """
-        # create unauthorized user
-        username = 'unauthorized'
-        password = 'unauthorized'
-        User.objects.create_user(username=username, password=password)
-        client = APIClient()
-        client.login(username=username, password=password)
         # request
         response = client.get(reverse('marknote:note-list-create'))
         response_body = json.loads(response.content)
