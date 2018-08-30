@@ -278,3 +278,16 @@ class TestNoteLCGet(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('notes' in response_body)
+
+
+class TestNoteRUDGet(APITestCase):
+    """
+    Test cases for GET requests on NoteRetrieveUpdateDestroyView.
+    """
+    def setUp(self):
+        # create test user
+        self.username = 'test'
+        self.password = 'test'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        # log in test client
+        self.client.login(self.username, password=self.password)
