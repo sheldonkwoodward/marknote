@@ -162,6 +162,17 @@ class TestNoteLCGet(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
+    def test_note_get_note(self):
+        """
+        Tests that no notes are retrieved when none exist.
+        """
+        response = self.client.get(reverse('marknote:note-list-create'))
+        response_body = json.loads(response.content)
+        empty_body = {
+            'notes': [],
+        }
+        self.assertEqual(response_body, empty_body)
+
     # TODO: test get no notes
     # TODO: test get multiple notes
     # TODO: test filter by title
