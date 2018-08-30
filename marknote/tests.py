@@ -197,7 +197,7 @@ class TestNoteLCGet(APITestCase):
 
     def test_note_filter_title(self):
         """
-        Tests that notes are filtered appropriately by their titles.
+        Tests that notes are filtered appropriately by their title.
         """
         # create notes
         Note(title='ab', content='content', owner=self.user).save()
@@ -216,7 +216,7 @@ class TestNoteLCGet(APITestCase):
 
     def test_note_filter_content(self):
         """
-        Tests that notes are filtered appropriately by their titles.
+        Tests that notes are filtered appropriately by their title.
         """
         # create notes
         Note(title='title', content='ab', owner=self.user).save()
@@ -226,6 +226,26 @@ class TestNoteLCGet(APITestCase):
         note_1.save()
         # request
         response = self.client.get(reverse('marknote:note-list-create') + '?content=c')
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_body['notes']), 2)
+        self.assertEqual(response_body['notes'][0]['pk'], note_0.id)
+        self.assertEqual(response_body['notes'][1]['pk'], note_1.id)
+
+    def test_note_filter_title_and_content(self):
+        """
+        Tests that notes are filtered appropriately by their title and content.
+        """
+        # create notes
+        Note(title='a', content='1', owner=self.user).save()
+        Note(title='c', content='3', owner=self.user).save()
+        note_0 = Note(title='ab', content='13', owner=self.user)
+        note_1 = Note(title='ac', content='23', owner=self.user)
+        note_0.save()
+        note_1.save()
+        # request
+        response = self.client.get(reverse('marknote:note-list-create') + '?title=a&content=3')
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
