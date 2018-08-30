@@ -162,7 +162,7 @@ class TestNoteLCGet(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
-    def test_note_get_note(self):
+    def test_note_get_none(self):
         """
         Tests that no notes are retrieved when none exist.
         """
@@ -173,8 +173,25 @@ class TestNoteLCGet(APITestCase):
         }
         self.assertEqual(response_body, empty_body)
 
-    # TODO: test get no notes
-    # TODO: test get multiple notes
+    def test_note_get_multiple(self):
+        """
+        Tests that multiple notes are retrieved when they exist.
+        """
+        # create notes
+        Note(title='title1', content='content1', owner=self.user).save()
+        Note(title='title2', content='content2', owner=self.user).save()
+        # request
+        response = self.client.get(reverse('marknote:note-list-create'))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(len(Note.objects.all()), 2)
+        for db_note, response_note in zip(Note.objects.all(), response_body['notes']):
+            self.assertEqual(response_note['pk'], db_note.id),
+            self.assertEqual(response_note['title'], db_note.title),
+            self.assertEqual(response_note['container'], db_note.container_id),
+            self.assertEqual(response_note['created'], db_note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
+            self.assertEqual(response_note['updated'], db_note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
+
     # TODO: test filter by title
     # TODO: test filter by content
     # TODO: test filter by title and content
