@@ -171,6 +171,8 @@ class TestNoteLCGet(APITestCase):
         empty_body = {
             'notes': [],
         }
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_body, empty_body)
 
     def test_note_get_multiple(self):
@@ -184,6 +186,7 @@ class TestNoteLCGet(APITestCase):
         response = self.client.get(reverse('marknote:note-list-create'))
         response_body = json.loads(response.content)
         # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(Note.objects.all()), 2)
         for db_note, response_note in zip(Note.objects.all(), response_body['notes']):
             self.assertEqual(response_note['pk'], db_note.id),
@@ -192,8 +195,44 @@ class TestNoteLCGet(APITestCase):
             self.assertEqual(response_note['created'], db_note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
             self.assertEqual(response_note['updated'], db_note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
 
-    # TODO: test filter by title
-    # TODO: test filter by content
+    def test_note_filter_title(self):
+        """
+        Tests that notes are filtered appropriately by their titles.
+        """
+        # create notes
+        Note(title='ab', content='content', owner=self.user).save()
+        note_0 = Note(title='bc', content='content', owner=self.user)
+        note_1 = Note(title='cd', content='content', owner=self.user)
+        note_0.save()
+        note_1.save()
+        # request
+        response = self.client.get(reverse('marknote:note-list-create') + '?title=c')
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_body['notes']), 2)
+        self.assertEqual(response_body['notes'][0]['pk'], note_0.id)
+        self.assertEqual(response_body['notes'][1]['pk'], note_1.id)
+
+    def test_note_filter_content(self):
+        """
+        Tests that notes are filtered appropriately by their titles.
+        """
+        # create notes
+        Note(title='title', content='ab', owner=self.user).save()
+        note_0 = Note(title='title', content='bc', owner=self.user)
+        note_1 = Note(title='title', content='cd', owner=self.user)
+        note_0.save()
+        note_1.save()
+        # request
+        response = self.client.get(reverse('marknote:note-list-create') + '?content=c')
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_body['notes']), 2)
+        self.assertEqual(response_body['notes'][0]['pk'], note_0.id)
+        self.assertEqual(response_body['notes'][1]['pk'], note_1.id)
+
     # TODO: test filter by title and content
     # TODO: test show only owned notes
     # TODO: test not authenticated
