@@ -162,7 +162,7 @@ class TestNoteLCGet(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
-    def test_note_get_none(self):
+    def test_note_retrieve_none(self):
         """
         Tests that no notes are retrieved when none exist.
         """
@@ -175,7 +175,7 @@ class TestNoteLCGet(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_body, empty_body)
 
-    def test_note_get_multiple(self):
+    def test_note_retrieve_multiple(self):
         """
         Tests that multiple notes are retrieved when they exist.
         """
@@ -187,7 +187,7 @@ class TestNoteLCGet(APITestCase):
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(Note.objects.all()), 2)
+        self.assertEqual(len(response_body['notes']), 2)
         for db_note, response_note in zip(Note.objects.all(), response_body['notes']):
             self.assertEqual(response_note['pk'], db_note.id),
             self.assertEqual(response_note['title'], db_note.title),
@@ -253,7 +253,48 @@ class TestNoteLCGet(APITestCase):
         self.assertEqual(response_body['notes'][0]['pk'], note_0.id)
         self.assertEqual(response_body['notes'][1]['pk'], note_1.id)
 
-    # TODO: test filter by title and content
-    # TODO: test show only owned notes
-    # TODO: test not authenticated
-    # TODO: test not authorized
+    def test_note_retrieve_owned(self):
+        """
+        Tests that only notes that are owned are retrieved.
+        """
+        # create notes
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        Note(title='title', content='content', owner=User.objects.create_user(username='other_user')).save()
+        # request
+        response = self.client.get(reverse('marknote:note-list-create'))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_body['notes']), 1)
+        self.assertEqual(response_body['notes'][0]['pk'], note.id)
+
+    def test_note_create_not_authenticated(self):
+        """
+        Tests that a note is not created when the user is not authenticated.
+        """
+        # create unauthenticated client
+        client = APIClient()
+        # request
+        response = client.get(reverse('marknote:note-list-create'))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('notes' in response_body)
+
+    def test_note_create_not_authorized(self):
+        """
+        Tests that a note is not created when when the user is authenticated but not authorized.
+        """
+        # create unauthorized user
+        username = 'unauthorized'
+        password = 'unauthorized'
+        User.objects.create_user(username=username, password=password)
+        client = APIClient()
+        client.login(username=username, password=password)
+        # request
+        response = client.get(reverse('marknote:note-list-create'))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('notes' in response_body)
