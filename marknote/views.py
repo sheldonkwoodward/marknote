@@ -33,6 +33,13 @@ class NoteListCreateView(ListCreateAPIView):
             qs = qs.filter(content__icontains=query)
         return qs
 
+    def list(self, request, *args, **kwargs):
+        response = super(NoteListCreateView, self).list(request, *args, **kwargs)
+        response.data = {
+            'notes': response.data,
+        }
+        return response
+
 
 class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
@@ -59,6 +66,13 @@ class FolderListCreateView(ListCreateAPIView):
         if query is not None:
             qs = qs.filter(title__icontains=query)
         return qs
+
+    def list(self, request, *args, **kwargs):
+        response = super(FolderListCreateView, self).list(request, *args, **kwargs)
+        response.data = {
+            'folders': response.data,
+        }
+        return response
 
 
 class FolderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
