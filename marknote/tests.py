@@ -118,11 +118,13 @@ class TestNoteLCPost(APITestCase):
             'content': 'content',
         }
         response = client.post(reverse('marknote:note-list-create'), body, format='json')
+        response_body = json.loads(response.content)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('pk' in response_body)
 
     def test_note_create_not_authorized(self):
         """
@@ -266,7 +268,7 @@ class TestNoteLCGet(APITestCase):
         self.assertEqual(len(response_body['notes']), 1)
         self.assertEqual(response_body['notes'][0]['pk'], note.id)
 
-    def test_note_create_not_authenticated(self):
+    def test_note_retrieve_not_authenticated(self):
         """
         Tests that a note is not created when the user is not authenticated.
         """
@@ -290,4 +292,63 @@ class TestNoteRUDGet(APITestCase):
         self.password = 'test'
         self.user = User.objects.create_user(username=self.username, password=self.password)
         # log in test client
-        self.client.login(self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
+
+    def test_note_retrieve(self):
+        """
+        Tests that the proper note is retrieved.
+        """
+        # create notes
+        note = Note(title='title1', content='content1', owner=self.user)
+        note.save()
+        Note(title='title2', content='content2', owner=self.user).save()
+        # request
+        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_body['pk'], note.id)
+        self.assertEqual(response_body['title'], note.title)
+        self.assertEqual(response_body['container'], None)
+        self.assertEqual(response_body['created'], note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+        self.assertEqual(response_body['updated'], note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+
+    def test_note_does_not_exist(self):
+        """
+        Tests that no note is retrieved if the id specified does not exist.
+        """
+        # create note
+        note = Note(title='title1', content='content1', owner=self.user)
+        note.save()
+        # request
+        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=['2']))
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_note_retrieve_not_owned(self):
+        """
+        Tests that notes that are not owned are not retrieved.
+        """
+        # create notes
+        note = Note(title='title', content='content', owner=User.objects.create_user(username='other_user'))
+        note.save()
+        # request
+        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_note_retrieve_not_authenticated(self):
+        """
+        Tests that a note is not retrieved when the user is not authenticated.
+        """
+        # create unauthenticated client
+        client = APIClient()
+        # create notes
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        # request
+        response = client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response_body = json.loads(response.content)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('pk' in response_body)
