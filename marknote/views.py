@@ -14,8 +14,9 @@ class NoteListCreateView(ListCreateAPIView):
     serializer_class = serializers.NoteSummarySerializer
 
     def get_queryset(self):
-        qs = Note.objects.all()
+        qs = Note.objects.all().filter(owner=self.request.user.id)
         # general search
+        print(self.request.user.id)
         query = self.request.GET.get('search')
         if query is not None:
             qs = qs.filter(
@@ -32,13 +33,22 @@ class NoteListCreateView(ListCreateAPIView):
             qs = qs.filter(content__icontains=query)
         return qs
 
+    def list(self, request, *args, **kwargs):
+        response = super(NoteListCreateView, self).list(request, *args, **kwargs)
+        response.data = {
+            'notes': response.data,
+        }
+        return response
+
 
 class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.NoteSerializer
-    queryset = Note.objects.all()
+
+    def get_queryset(self):
+        return Note.objects.all().filter(owner=self.request.user.id)
 
 
 class FolderListCreateView(ListCreateAPIView):
@@ -48,7 +58,7 @@ class FolderListCreateView(ListCreateAPIView):
     serializer_class = serializers.FolderSummarySerializer
 
     def get_queryset(self):
-        qs = Folder.objects.all()
+        qs = Folder.objects.all().filter(owner=self.request.user.id)
         query = self.request.GET.get('search')
         if query is not None:
             qs = qs.filter(title__icontains=query)
@@ -57,10 +67,19 @@ class FolderListCreateView(ListCreateAPIView):
             qs = qs.filter(title__icontains=query)
         return qs
 
+    def list(self, request, *args, **kwargs):
+        response = super(FolderListCreateView, self).list(request, *args, **kwargs)
+        response.data = {
+            'folders': response.data,
+        }
+        return response
+
 
 class FolderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.FolderSerializer
-    queryset = Folder.objects.all()
+
+    def get_queryset(self):
+        return Folder.objects.all().filter(owner=self.request.user.id)
