@@ -470,6 +470,31 @@ class TestNoteRUDPutPatch(APITestCase):
         self.assertNotEqual(response_body['created'], body['created'])
         self.assertNotEqual(response_body['updated'], body['updated'])
 
-    # TODO: test_note_update_not_owned
+    def test_note_update_not_owned(self):
+        """
+        Tests that notes that are note owned are not updated.
+        """
+        # create note
+        original_title = 'title'
+        original_content = 'content'
+        note = Note(title=original_title,
+                    content=original_content,
+                    owner=User.objects.create_user(username='other_user'))
+        note.save()
+        # request
+        body = {
+            'title': 'title changed',
+        }
+        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(original_title, note.title)
+        self.assertEqual(original_content, note.content)
+        self.assertEqual(None, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertFalse('pk' in response_body)
+
     # TODO: test_note_update_not_authenticated
     # TODO: test_note_update_not_authorized
