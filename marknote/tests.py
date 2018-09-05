@@ -569,6 +569,9 @@ class TestNoteRUDDelete(APITestCase):
 
     # TODO: add docstrings
     def test_note_destroy(self):
+        """
+        Tests that a note is properly destroyed.
+        """
         # create note
         note = Note(title='title', content='content', owner=self.user)
         note.save()
@@ -581,6 +584,9 @@ class TestNoteRUDDelete(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_note_does_not_exist(self):
+        """
+        Tests that destroying a non-existent note does not affect other notes.
+        """
         # create note
         note = Note(title='title', content='content', owner=self.user)
         note.save()
@@ -593,6 +599,9 @@ class TestNoteRUDDelete(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_note_destroy_not_owned(self):
+        """
+        Tests that notes that are not owned are not destroyed.
+        """
         # create note
         note = Note(title='title', content='content', owner=User.objects.create_user(username='other_user'))
         note.save()
@@ -605,6 +614,9 @@ class TestNoteRUDDelete(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_note_destroy_not_authenticated(self):
+        """
+        Tests that a note is not destroyed when a user is not authenticated.
+        """
         # create unauthenticated client
         client = APIClient()
         # create note
