@@ -22,6 +22,8 @@ class TestNoteLCPost(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='add_folder'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
+        # view name
+        self.view_name = 'marknote:note-list-create'
 
     def test_note_create(self):
         """
@@ -32,7 +34,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body)
+        response = self.client.post(reverse(self.view_name), body)
         response_body = json.loads(response.content)
         note = Note.objects.first()
         # test database
@@ -64,7 +66,7 @@ class TestNoteLCPost(APITestCase):
             'content': 'content',
             'container': folder_response_body['pk'],
         }
-        note_response = self.client.post(reverse('marknote:note-list-create'), note_body)
+        note_response = self.client.post(reverse(self.view_name), note_body)
         note_response_body = json.loads(note_response.content)
         note = Note.objects.first()
         # test database
@@ -84,7 +86,7 @@ class TestNoteLCPost(APITestCase):
         body = {
             'content': 'content',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body)
+        response = self.client.post(reverse(self.view_name), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -99,7 +101,7 @@ class TestNoteLCPost(APITestCase):
         body = {
             'title': 'title',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body)
+        response = self.client.post(reverse(self.view_name), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -117,7 +119,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = client.post(reverse('marknote:note-list-create'), body)
+        response = client.post(reverse(self.view_name), body)
         response_body = json.loads(response.content)
         notes = Note.objects.all()
         # test database
@@ -141,7 +143,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = client.post(reverse('marknote:note-list-create'), body)
+        response = client.post(reverse(self.view_name), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -160,12 +162,14 @@ class TestNoteLCGet(APITestCase):
         self.user = User.objects.create_user(username=self.username, password=self.password)
         # log in test client
         self.client.login(username=self.username, password=self.password)
+        # view name
+        self.view_name = 'marknote:note-list-create'
 
     def test_note_retrieve_none(self):
         """
         Tests that no notes are retrieved when none exist.
         """
-        response = self.client.get(reverse('marknote:note-list-create'))
+        response = self.client.get(reverse(self.view_name))
         response_body = json.loads(response.content)
         empty_body = {
             'notes': [],
@@ -182,7 +186,7 @@ class TestNoteLCGet(APITestCase):
         Note(title='title1', content='content1', owner=self.user).save()
         Note(title='title2', content='content2', owner=self.user).save()
         # request
-        response = self.client.get(reverse('marknote:note-list-create'))
+        response = self.client.get(reverse(self.view_name))
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -205,7 +209,7 @@ class TestNoteLCGet(APITestCase):
         note_0.save()
         note_1.save()
         # request
-        response = self.client.get(reverse('marknote:note-list-create') + '?title=c')
+        response = self.client.get(reverse(self.view_name) + '?title=c')
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -224,7 +228,7 @@ class TestNoteLCGet(APITestCase):
         note_0.save()
         note_1.save()
         # request
-        response = self.client.get(reverse('marknote:note-list-create') + '?content=c')
+        response = self.client.get(reverse(self.view_name) + '?content=c')
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -244,7 +248,7 @@ class TestNoteLCGet(APITestCase):
         note_0.save()
         note_1.save()
         # request
-        response = self.client.get(reverse('marknote:note-list-create') + '?title=a&content=3')
+        response = self.client.get(reverse(self.view_name) + '?title=a&content=3')
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -261,7 +265,7 @@ class TestNoteLCGet(APITestCase):
         note.save()
         Note(title='title', content='content', owner=User.objects.create_user(username='other_user')).save()
         # request
-        response = self.client.get(reverse('marknote:note-list-create'))
+        response = self.client.get(reverse(self.view_name))
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -275,7 +279,7 @@ class TestNoteLCGet(APITestCase):
         # create unauthenticated client
         client = APIClient()
         # request
-        response = client.get(reverse('marknote:note-list-create'))
+        response = client.get(reverse(self.view_name))
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -293,6 +297,8 @@ class TestNoteRUDGet(APITestCase):
         self.user = User.objects.create_user(username=self.username, password=self.password)
         # log in test client
         self.client.login(username=self.username, password=self.password)
+        # view name
+        self.view_name = 'marknote:note-retrieve-update-destroy'
 
     def test_note_retrieve(self):
         """
@@ -303,7 +309,7 @@ class TestNoteRUDGet(APITestCase):
         note.save()
         Note(title='title2', content='content2', owner=self.user).save()
         # request
-        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = self.client.get(reverse(self.view_name, args=[note.id]))
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -321,7 +327,7 @@ class TestNoteRUDGet(APITestCase):
         note = Note(title='title1', content='content1', owner=self.user)
         note.save()
         # request
-        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=['2']))
+        response = self.client.get(reverse(self.view_name, args=['2']))
         # test response
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -333,7 +339,7 @@ class TestNoteRUDGet(APITestCase):
         note = Note(title='title', content='content', owner=User.objects.create_user(username='other_user'))
         note.save()
         # request
-        response = self.client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = self.client.get(reverse(self.view_name, args=[note.id]))
         # test response
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -347,7 +353,7 @@ class TestNoteRUDGet(APITestCase):
         note = Note(title='title', content='content', owner=self.user)
         note.save()
         # request
-        response = client.get(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = client.get(reverse(self.view_name, args=[note.id]))
         response_body = json.loads(response.content)
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -367,6 +373,8 @@ class TestNoteRUDPutPatch(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='change_note'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
+        # view name
+        self.view_name = 'marknote:note-retrieve-update-destroy'
 
     def test_note_update_full(self):
         """
@@ -383,7 +391,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'content': 'content changed',
             'container': folder.id,
         }
-        response = self.client.put(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = self.client.put(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -409,7 +417,7 @@ class TestNoteRUDPutPatch(APITestCase):
         body = {
             'title': 'title changed',
         }
-        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -435,7 +443,7 @@ class TestNoteRUDPutPatch(APITestCase):
         body = {
             'container': '1',
         }
-        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -459,7 +467,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'created': '2018-09-04T16:30:28.469865Z',
             'updated': '2018-09-04T16:30:28.469865Z',
         }
-        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[original_note.id]), body)
+        response = self.client.patch(reverse(self.view_name, args=[original_note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -485,7 +493,7 @@ class TestNoteRUDPutPatch(APITestCase):
         body = {
             'title': 'title changed',
         }
-        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -511,7 +519,7 @@ class TestNoteRUDPutPatch(APITestCase):
         body = {
             'title': 'title changed',
         }
-        response = client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = client.patch(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -541,7 +549,7 @@ class TestNoteRUDPutPatch(APITestCase):
         body = {
             'title': 'title changed',
         }
-        response = client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response = client.patch(reverse(self.view_name, args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -566,8 +574,9 @@ class TestNoteRUDDelete(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
+        # view name
+        self.view_name = 'marknote:note-retrieve-update-destroy'
 
-    # TODO: add docstrings
     def test_note_destroy(self):
         """
         Tests that a note is properly destroyed.
@@ -576,7 +585,7 @@ class TestNoteRUDDelete(APITestCase):
         note = Note(title='title', content='content', owner=self.user)
         note.save()
         # request
-        response = self.client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = self.client.delete(reverse(self.view_name, args=[note.id]))
         # test database
         notes = Note.objects.all()
         self.assertEqual(len(notes), 0)
@@ -591,7 +600,7 @@ class TestNoteRUDDelete(APITestCase):
         note = Note(title='title', content='content', owner=self.user)
         note.save()
         # request
-        response = self.client.delete(reverse('marknote:note-retrieve-update-destroy', args=['2']))
+        response = self.client.delete(reverse(self.view_name, args=['2']))
         # test database
         notes = Note.objects.all()
         self.assertEqual(len(notes), 1)
@@ -606,7 +615,7 @@ class TestNoteRUDDelete(APITestCase):
         note = Note(title='title', content='content', owner=User.objects.create_user(username='other_user'))
         note.save()
         # request
-        response = self.client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = self.client.delete(reverse(self.view_name, args=[note.id]))
         # test database
         notes = Note.objects.all()
         self.assertEqual(len(notes), 1)
@@ -623,7 +632,7 @@ class TestNoteRUDDelete(APITestCase):
         note = Note(title='title', content='content', owner=self.user)
         note.save()
         # request
-        response = client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = client.delete(reverse(self.view_name, args=[note.id]))
         # test database
         notes = Note.objects.all()
         self.assertEqual(len(notes), 1)
@@ -644,7 +653,7 @@ class TestNoteRUDDelete(APITestCase):
         note = Note(title='title', content='content', owner=self.user)
         note.save()
         # request
-        response = client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        response = client.delete(reverse(self.view_name, args=[note.id]))
         # test database
         notes = Note.objects.all()
         self.assertEqual(len(notes), 1)
