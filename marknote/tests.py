@@ -32,7 +32,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
+        response = self.client.post(reverse('marknote:note-list-create'), body)
         response_body = json.loads(response.content)
         note = Note.objects.first()
         # test database
@@ -55,7 +55,7 @@ class TestNoteLCPost(APITestCase):
         folder_body = {
             'title': 'folder',
         }
-        folder_response = self.client.post(reverse('marknote:folder-list-create'), folder_body, format='json')
+        folder_response = self.client.post(reverse('marknote:folder-list-create'), folder_body)
         folder_response_body = json.loads(folder_response.content)
         folder = Folder.objects.first()
         # create note
@@ -64,7 +64,7 @@ class TestNoteLCPost(APITestCase):
             'content': 'content',
             'container': folder_response_body['pk'],
         }
-        note_response = self.client.post(reverse('marknote:note-list-create'), note_body, format='json')
+        note_response = self.client.post(reverse('marknote:note-list-create'), note_body)
         note_response_body = json.loads(note_response.content)
         note = Note.objects.first()
         # test database
@@ -84,7 +84,7 @@ class TestNoteLCPost(APITestCase):
         body = {
             'content': 'content',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
+        response = self.client.post(reverse('marknote:note-list-create'), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -99,7 +99,7 @@ class TestNoteLCPost(APITestCase):
         body = {
             'title': 'title',
         }
-        response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
+        response = self.client.post(reverse('marknote:note-list-create'), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -117,7 +117,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = client.post(reverse('marknote:note-list-create'), body, format='json')
+        response = client.post(reverse('marknote:note-list-create'), body)
         response_body = json.loads(response.content)
         notes = Note.objects.all()
         # test database
@@ -141,7 +141,7 @@ class TestNoteLCPost(APITestCase):
             'title': 'title',
             'content': 'content',
         }
-        response = client.post(reverse('marknote:note-list-create'), body, format='json')
+        response = client.post(reverse('marknote:note-list-create'), body)
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -354,7 +354,7 @@ class TestNoteRUDGet(APITestCase):
         self.assertFalse('pk' in response_body)
 
 
-class TestNoteRUDPut(APITestCase):
+class TestNoteRUDPutPatch(APITestCase):
     """
     Test cases for PUT requests on NoteRetrieveUpdateDestroyView.
     """
@@ -368,7 +368,6 @@ class TestNoteRUDPut(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
-    # TODO: test_note_update_full
     def test_note_update_full(self):
         """
         Tests that a full note update executes properly.
@@ -384,7 +383,7 @@ class TestNoteRUDPut(APITestCase):
             'content': 'content changed',
             'container': folder.id,
         }
-        response = self.client.put(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body, format='json')
+        response = self.client.put(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
         response_body = json.loads(response.content)
         # test database
         note = Note.objects.first()
@@ -397,7 +396,32 @@ class TestNoteRUDPut(APITestCase):
         self.assertEqual(response_body['content'], body['content'])
         self.assertEqual(response_body['container'], folder.id)
 
-    # TODO: test_note_update_partial
+    def test_note_update_partial(self):
+        """
+        Tests that a partial note update executes properly.
+        """
+        # create note
+        original_title = 'title'
+        original_content = 'content'
+        note = Note(title=original_title, content=original_content, owner=self.user)
+        note.save()
+        # request
+        body = {
+            'title': 'title changed',
+        }
+        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(body['title'], note.title)
+        self.assertEqual(original_content, note.content)
+        self.assertEqual(None, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_body['title'], body['title'])
+        self.assertEqual(response_body['content'], original_content)
+        self.assertEqual(response_body['container'], None)
+
     # TODO: test_note_update_container_does_not_exist
     # TODO: test_note_update_read_only_fields
     # TODO: test_note_update_not_owned
