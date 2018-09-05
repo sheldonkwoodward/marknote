@@ -566,3 +566,20 @@ class TestNoteRUDDelete(APITestCase):
         self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
         # log in test client
         self.client.login(username=self.username, password=self.password)
+
+    def test_note_destroy(self):
+        # create note
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        # request
+        response = self.client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        # test database
+        notes = Note.objects.all()
+        self.assertEqual(len(notes), 0)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    # TODO: test_note_does_not_exist
+    # TODO: test_note_destroy_not_owned
+    # TODO: test_note_destroy_not_authenticated
+    # TODO: test_note_destroy_not_authorized
