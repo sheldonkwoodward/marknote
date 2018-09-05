@@ -446,7 +446,30 @@ class TestNoteRUDPutPatch(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse('pk' in response_body)
 
-    # TODO: test_note_update_read_only_fields
+    def test_note_update_read_only_fields(self):
+        """
+        Tests that read only fields cannot be updated.
+        """
+        # create note
+        original_note = Note(title='title', content='title', owner=self.user)
+        original_note.save()
+        # request
+        body = {
+            'pk': '2',
+            'created': '2018-09-04T16:30:28.469865Z',
+            'updated': '2018-09-04T16:30:28.469865Z',
+        }
+        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[original_note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(original_note, note)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(response_body['pk'], body['pk'])
+        self.assertNotEqual(response_body['created'], body['created'])
+        self.assertNotEqual(response_body['updated'], body['updated'])
+
     # TODO: test_note_update_not_owned
     # TODO: test_note_update_not_authenticated
     # TODO: test_note_update_not_authorized
