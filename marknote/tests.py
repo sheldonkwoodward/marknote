@@ -551,3 +551,18 @@ class TestNoteRUDPutPatch(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('pk' in response_body)
+
+
+class TestNoteRUDDelete(APITestCase):
+    """
+    Test cases for DELETE requests on NoteRetrieveUpdateDestroyView.
+    """
+    def setUp(self):
+        # create test user
+        self.username = 'test'
+        self.password = 'test'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        # permissions
+        self.user.user_permissions.add(Permission.objects.get(codename='delete_note'))
+        # log in test client
+        self.client.login(username=self.username, password=self.password)
