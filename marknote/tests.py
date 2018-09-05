@@ -34,7 +34,7 @@ class TestNoteLCPost(APITestCase):
         }
         response = self.client.post(reverse('marknote:note-list-create'), body, format='json')
         response_body = json.loads(response.content)
-        note = Note.objects.get(title=body['title'], content=body['content'])
+        note = Note.objects.first()
         # test database
         self.assertEqual(body['title'], note.title)
         self.assertEqual(body['content'], note.content)
@@ -57,7 +57,7 @@ class TestNoteLCPost(APITestCase):
         }
         folder_response = self.client.post(reverse('marknote:folder-list-create'), folder_body, format='json')
         folder_response_body = json.loads(folder_response.content)
-        folder = Folder.objects.get(title=folder_body['title'])
+        folder = Folder.objects.first()
         # create note
         note_body = {
             'title': 'title',
@@ -66,7 +66,7 @@ class TestNoteLCPost(APITestCase):
         }
         note_response = self.client.post(reverse('marknote:note-list-create'), note_body, format='json')
         note_response_body = json.loads(note_response.content)
-        note = Note.objects.get(title=note_body['title'], content=note_body['content'])
+        note = Note.objects.first()
         # test database
         self.assertEqual(note.container.id, note_body['container'])
         self.assertEqual(note.container, folder)
@@ -352,3 +352,54 @@ class TestNoteRUDGet(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('pk' in response_body)
+
+
+class TestNoteRUDPut(APITestCase):
+    """
+    Test cases for PUT requests on NoteRetrieveUpdateDestroyView.
+    """
+    def setUp(self):
+        # create test user
+        self.username = 'test'
+        self.password = 'test'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        # permissions
+        self.user.user_permissions.add(Permission.objects.get(codename='change_note'))
+        # log in test client
+        self.client.login(username=self.username, password=self.password)
+
+    # TODO: test_note_update_full
+    def test_note_update_full(self):
+        """
+        Tests that a full note update executes properly.
+        """
+        # create note and folder
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        folder = Folder(title='title', owner=self.user)
+        folder.save()
+        # request
+        body = {
+            'title': 'title changed',
+            'content': 'content changed',
+            'container': folder.id,
+        }
+        response = self.client.put(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body, format='json')
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(body['title'], note.title)
+        self.assertEqual(body['content'], note.content)
+        self.assertEqual(folder, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_body['title'], body['title'])
+        self.assertEqual(response_body['content'], body['content'])
+        self.assertEqual(response_body['container'], folder.id)
+
+    # TODO: test_note_update_partial
+    # TODO: test_note_update_container_does_not_exist
+    # TODO: test_note_update_read_only_fields
+    # TODO: test_note_update_not_owned
+    # TODO: test_note_update_not_authenticated
+    # TODO: test_note_update_not_authorized
