@@ -496,5 +496,58 @@ class TestNoteRUDPutPatch(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertFalse('pk' in response_body)
 
-    # TODO: test_note_update_not_authenticated
-    # TODO: test_note_update_not_authorized
+    def test_note_update_not_authenticated(self):
+        """
+        Tests that a note is not retrieved when a user is not authenticated.
+        """
+        # create unauthenticated client
+        client = APIClient()
+        # create note
+        original_title = 'title'
+        original_content = 'content'
+        note = Note(title=original_title, content=original_content, owner=self.user)
+        note.save()
+        # request
+        body = {
+            'title': 'title changed',
+        }
+        response = client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(original_title, note.title)
+        self.assertEqual(original_content, note.content)
+        self.assertEqual(None, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('pk' in response_body)
+
+    def test_note_update_not_authorized(self):
+        """
+        Tests that a note is not retrieved when a user is not authorized.
+        """
+        # create unauthorized user
+        username = 'unauthorized'
+        password = 'unauthorized'
+        User.objects.create_user(username=username, password=password)
+        client = APIClient()
+        client.login(username=username, password=password)
+        # create note
+        original_title = 'title'
+        original_content = 'content'
+        note = Note(title=original_title, content=original_content, owner=self.user)
+        note.save()
+        # request
+        body = {
+            'title': 'title changed',
+        }
+        response = client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(original_title, note.title)
+        self.assertEqual(original_content, note.content)
+        self.assertEqual(None, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse('pk' in response_body)
