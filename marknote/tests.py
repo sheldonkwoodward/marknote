@@ -567,6 +567,7 @@ class TestNoteRUDDelete(APITestCase):
         # log in test client
         self.client.login(username=self.username, password=self.password)
 
+    # TODO: add docstrings
     def test_note_destroy(self):
         # create note
         note = Note(title='title', content='content', owner=self.user)
@@ -603,5 +604,18 @@ class TestNoteRUDDelete(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # TODO: test_note_destroy_not_authenticated
+    def test_note_destroy_not_authenticated(self):
+        # create unauthenticated client
+        client = APIClient()
+        # create note
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        # request
+        response = client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        # test database
+        notes = Note.objects.all()
+        self.assertEqual(len(notes), 1)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     # TODO: test_note_destroy_not_authorized
