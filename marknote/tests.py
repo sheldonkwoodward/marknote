@@ -618,4 +618,23 @@ class TestNoteRUDDelete(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # TODO: test_note_destroy_not_authorized
+    def test_note_destroy_not_authorized(self):
+        """
+        Tests that a note is not destroyed when a user is not authorized.
+        """
+        # create unauthorized user
+        username = 'unauthorized'
+        password = 'unauthorized'
+        User.objects.create_user(username=username, password=password)
+        client = APIClient()
+        client.login(username=username, password=password)
+        # create note
+        note = Note(title='title', content='content', owner=self.user)
+        note.save()
+        # request
+        response = client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        # test database
+        notes = Note.objects.all()
+        self.assertEqual(len(notes), 1)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
