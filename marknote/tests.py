@@ -591,6 +591,17 @@ class TestNoteRUDDelete(APITestCase):
         # test response
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # TODO: test_note_destroy_not_owned
+    def test_note_destroy_not_owned(self):
+        # create note
+        note = Note(title='title', content='content', owner=User.objects.create_user(username='other_user'))
+        note.save()
+        # request
+        response = self.client.delete(reverse('marknote:note-retrieve-update-destroy', args=[note.id]))
+        # test database
+        notes = Note.objects.all()
+        self.assertEqual(len(notes), 1)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     # TODO: test_note_destroy_not_authenticated
     # TODO: test_note_destroy_not_authorized
