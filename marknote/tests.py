@@ -422,7 +422,30 @@ class TestNoteRUDPutPatch(APITestCase):
         self.assertEqual(response_body['content'], original_content)
         self.assertEqual(response_body['container'], None)
 
-    # TODO: test_note_update_container_does_not_exist
+    def test_note_update_container_does_not_exist(self):
+        """
+        Tests that a note cannot be updated with a non-existent container.
+        """
+        # create note and folder
+        original_title = 'title'
+        original_content = 'content'
+        note = Note(title=original_title, content=original_content, owner=self.user)
+        note.save()
+        # request
+        body = {
+            'container': '1',
+        }
+        response = self.client.patch(reverse('marknote:note-retrieve-update-destroy', args=[note.id]), body)
+        response_body = json.loads(response.content)
+        # test database
+        note = Note.objects.first()
+        self.assertEqual(original_title, note.title)
+        self.assertEqual(original_content, note.content)
+        self.assertEqual(None, note.container)
+        # test response
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse('pk' in response_body)
+
     # TODO: test_note_update_read_only_fields
     # TODO: test_note_update_not_owned
     # TODO: test_note_update_not_authenticated
