@@ -53,19 +53,14 @@ class TestNoteLCPost(APITestCase):
         """
         Tests that a note in a folder was properly created.
         """
-        # TODO: don't create with request
         # create folder
-        folder_body = {
-            'title': 'folder',
-        }
-        folder_response = self.client.post(reverse('marknote:folder-list-create'), folder_body)
-        folder_response_body = json.loads(folder_response.content)
-        folder = Folder.objects.first()
+        folder = Folder(title='top', owner=self.user)
+        folder.save()
         # create note
         note_body = {
             'title': 'title',
             'content': 'content',
-            'container': folder_response_body['pk'],
+            'container': folder.id,
         }
         note_response = self.client.post(reverse(self.view_name), note_body)
         note_response_body = json.loads(note_response.content)
@@ -75,7 +70,7 @@ class TestNoteLCPost(APITestCase):
         self.assertEqual(note.container, folder)
         # test note_response
         self.assertEqual(note_response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(note_response_body['container'], folder_response_body['pk'])
+        self.assertEqual(note_response_body['container'], folder.id)
         # test database against note_response
         self.assertEqual(note.container.id, note_response_body['pk'])
 
