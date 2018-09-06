@@ -53,6 +53,7 @@ class TestNoteLCPost(APITestCase):
         """
         Tests that a note in a folder was properly created.
         """
+        # TODO: don't create with request
         # create folder
         folder_body = {
             'title': 'folder',
