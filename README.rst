@@ -37,6 +37,8 @@ Installation
 
 Endpoints
 =========
+Documentation can be found `here <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/sheldonkwoodward/marknote/master/docs/marknote.yml#//>`_.
+
 There are four different endpoints for the API. The ``marknote`` portion of the URI can be mapped using the Django urls.py file. It is setup as shown in the sample project. Refer to the ``docs`` folder for the complete OpenAPI specification.
 
 - ``/marknote/note``
