@@ -9,6 +9,7 @@ A simple note taking API for Django that supports creating notes and a folder st
 Installation
 ============
 1. Install with pip.
+
 ::
 
     $ pip install marknote
