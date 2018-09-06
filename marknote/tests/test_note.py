@@ -188,11 +188,11 @@ class TestNoteLCGet(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 2)
         for db_note, response_note in zip(Note.objects.all(), response_body['notes']):
-            self.assertEqual(response_note['pk'], db_note.id),
-            self.assertEqual(response_note['title'], db_note.title),
-            self.assertEqual(response_note['container'], db_note.container_id),
-            self.assertEqual(response_note['created'], db_note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
-            self.assertEqual(response_note['updated'], db_note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
+            self.assertEqual(response_note['pk'], db_note.id)
+            self.assertEqual(response_note['title'], db_note.title)
+            self.assertEqual(response_note['container'], db_note.container_id)
+            self.assertEqual(response_note['created'], db_note.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+            self.assertEqual(response_note['updated'], db_note.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
 
     def test_note_filter_title(self):
         """

@@ -163,11 +163,11 @@ class TestFolderLCGet(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['folders']), 2)
         for db_folder, response_folder in zip(Folder.objects.all(), response_body['folders']):
-            self.assertEqual(response_folder['pk'], db_folder.id),
-            self.assertEqual(response_folder['title'], db_folder.title),
+            self.assertEqual(response_folder['pk'], db_folder.id)
+            self.assertEqual(response_folder['title'], db_folder.title)
             self.assertEqual(response_folder['container'], db_folder.container_id),
-            self.assertEqual(response_folder['created'], db_folder.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
-            self.assertEqual(response_folder['updated'], db_folder.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ')),
+            self.assertEqual(response_folder['created'], db_folder.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
+            self.assertEqual(response_folder['updated'], db_folder.updated.strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
 
     def test_folder_filter_title(self):
         """
