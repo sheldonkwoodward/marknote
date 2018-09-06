@@ -1,4 +1,2 @@
 # sheldon woodward
-# DATE
-
-"""Docstring"""
+# 9/6/18

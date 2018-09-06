@@ -33,7 +33,7 @@ class TestFolderLCPost(APITestCase):
             'title': 'title',
         }
         response = self.client.post(reverse(self.view_name), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         folder = Folder.objects.first()
         # test database
         self.assertEqual(body['title'], folder.title)
@@ -59,7 +59,7 @@ class TestFolderLCPost(APITestCase):
             'container': top_folder.id,
         }
         bottom_response = self.client.post(reverse(self.view_name), body)
-        bottom_response_body = json.loads(bottom_response.content)
+        bottom_response_body = json.loads(bottom_response.content.decode('utf-8'))
         bottom_folder = Folder.objects.get(title=body['title'])
         # test database
         self.assertEqual(bottom_folder.container.id, body['container'])
@@ -92,7 +92,7 @@ class TestFolderLCPost(APITestCase):
             'title': 'title',
         }
         response = client.post(reverse(self.view_name), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         folders = Folder.objects.all()
         # test database
         self.assertEqual(len(folders), 0)
@@ -141,7 +141,7 @@ class TestFolderLCGet(APITestCase):
         Tests that no folders are retrieved when none exist.
         """
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         empty_body = {
             'folders': [],
         }
@@ -158,7 +158,7 @@ class TestFolderLCGet(APITestCase):
         Folder(title='title2', owner=self.user).save()
         # request
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['folders']), 2)
@@ -181,7 +181,7 @@ class TestFolderLCGet(APITestCase):
         folder_1.save()
         # request
         response = self.client.get(reverse(self.view_name) + '?title=c')
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['folders']), 2)
@@ -198,7 +198,7 @@ class TestFolderLCGet(APITestCase):
         Folder(title='title', owner=User.objects.create_user(username='other_user')).save()
         # request
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['folders']), 1)
@@ -212,7 +212,7 @@ class TestFolderLCGet(APITestCase):
         client = APIClient()
         # request
         response = client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('folders' in response_body)
@@ -242,7 +242,7 @@ class TestFolderRUDGet(APITestCase):
         Folder(title='title2', owner=self.user).save()
         # request
         response = self.client.get(reverse(self.view_name, args=[folder.id]))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_body['pk'], folder.id)
@@ -286,7 +286,7 @@ class TestFolderRUDGet(APITestCase):
         folder.save()
         # request
         response = client.get(reverse(self.view_name, args=[folder.id]))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('pk' in response_body)
@@ -323,7 +323,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'container': top_folder.id,
         }
         response = self.client.put(reverse(self.view_name, args=[bottom_folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.get(id=bottom_folder.id)
         self.assertEqual(body['title'], folder.title)
@@ -346,7 +346,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = self.client.patch(reverse(self.view_name, args=[folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(body['title'], folder.title)
@@ -369,7 +369,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'container': '2',
         }
         response = self.client.patch(reverse(self.view_name, args=[folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(original_title, folder.title)
@@ -392,7 +392,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'updated': '2018-09-04T16:30:28.469865Z',
         }
         response = self.client.patch(reverse(self.view_name, args=[original_folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(original_folder, folder)
@@ -415,7 +415,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = self.client.patch(reverse(self.view_name, args=[folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(original_title, folder.title)
@@ -439,7 +439,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = client.patch(reverse(self.view_name, args=[folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(original_title, folder.title)
@@ -467,7 +467,7 @@ class TestFolderRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = client.patch(reverse(self.view_name, args=[folder.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         folder = Folder.objects.first()
         self.assertEqual(original_title, folder.title)

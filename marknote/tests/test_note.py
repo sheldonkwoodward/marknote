@@ -35,7 +35,7 @@ class TestNoteLCPost(APITestCase):
             'content': 'content',
         }
         response = self.client.post(reverse(self.view_name), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         note = Note.objects.first()
         # test database
         self.assertEqual(body['title'], note.title)
@@ -63,7 +63,7 @@ class TestNoteLCPost(APITestCase):
             'container': folder.id,
         }
         note_response = self.client.post(reverse(self.view_name), note_body)
-        note_response_body = json.loads(note_response.content)
+        note_response_body = json.loads(note_response.content.decode('utf-8'))
         note = Note.objects.first()
         # test database
         self.assertEqual(note.container.id, note_body['container'])
@@ -116,7 +116,7 @@ class TestNoteLCPost(APITestCase):
             'content': 'content',
         }
         response = client.post(reverse(self.view_name), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         notes = Note.objects.all()
         # test database
         self.assertEqual(len(notes), 0)
@@ -166,7 +166,7 @@ class TestNoteLCGet(APITestCase):
         Tests that no notes are retrieved when none exist.
         """
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         empty_body = {
             'notes': [],
         }
@@ -183,7 +183,7 @@ class TestNoteLCGet(APITestCase):
         Note(title='title2', content='content2', owner=self.user).save()
         # request
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 2)
@@ -206,7 +206,7 @@ class TestNoteLCGet(APITestCase):
         note_1.save()
         # request
         response = self.client.get(reverse(self.view_name) + '?title=c')
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 2)
@@ -225,7 +225,7 @@ class TestNoteLCGet(APITestCase):
         note_1.save()
         # request
         response = self.client.get(reverse(self.view_name) + '?content=c')
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 2)
@@ -245,7 +245,7 @@ class TestNoteLCGet(APITestCase):
         note_1.save()
         # request
         response = self.client.get(reverse(self.view_name) + '?title=a&content=3')
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 2)
@@ -262,7 +262,7 @@ class TestNoteLCGet(APITestCase):
         Note(title='title', content='content', owner=User.objects.create_user(username='other_user')).save()
         # request
         response = self.client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_body['notes']), 1)
@@ -276,7 +276,7 @@ class TestNoteLCGet(APITestCase):
         client = APIClient()
         # request
         response = client.get(reverse(self.view_name))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('notes' in response_body)
@@ -306,7 +306,7 @@ class TestNoteRUDGet(APITestCase):
         Note(title='title2', content='content2', owner=self.user).save()
         # request
         response = self.client.get(reverse(self.view_name, args=[note.id]))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_body['pk'], note.id)
@@ -350,7 +350,7 @@ class TestNoteRUDGet(APITestCase):
         note.save()
         # request
         response = client.get(reverse(self.view_name, args=[note.id]))
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test response
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse('pk' in response_body)
@@ -388,7 +388,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'container': folder.id,
         }
         response = self.client.put(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(body['title'], note.title)
@@ -414,7 +414,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(body['title'], note.title)
@@ -440,7 +440,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'container': '1',
         }
         response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(original_title, note.title)
@@ -464,7 +464,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'updated': '2018-09-04T16:30:28.469865Z',
         }
         response = self.client.patch(reverse(self.view_name, args=[original_note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(original_note, note)
@@ -490,7 +490,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = self.client.patch(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(original_title, note.title)
@@ -516,7 +516,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = client.patch(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(original_title, note.title)
@@ -546,7 +546,7 @@ class TestNoteRUDPutPatch(APITestCase):
             'title': 'title changed',
         }
         response = client.patch(reverse(self.view_name, args=[note.id]), body)
-        response_body = json.loads(response.content)
+        response_body = json.loads(response.content.decode('utf-8'))
         # test database
         note = Note.objects.first()
         self.assertEqual(original_title, note.title)
