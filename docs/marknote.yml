@@ -27,9 +27,9 @@ paths:
       - name: content
         in: formData
         description: The content of the new note.
-        required: false
+        required: true
         type: string
-      - name: containerId
+      - name: container
         in: formData
         description: The folder to put the note in.
         required: false
@@ -41,7 +41,7 @@ paths:
             $ref: "#/definitions/Note"
         400:
           description: The note could not be created as specified.
-        401:
+        403:
           description: The user is not authenticated.
     get:
       summary: Retrieve all notes
@@ -71,7 +71,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/NoteSummary"
-        401:
+        403:
           description: The user is not authenticated.
   /note/{id}:
     get:
@@ -95,7 +95,7 @@ paths:
             properties:
               note:
                 $ref: "#/definitions/Note"
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The note could not be found.
@@ -117,14 +117,14 @@ paths:
       - name: title
         in: formData
         description: The new title of the note
-        required: false
+        required: true
         type: string
       - name: content
         in: formData
         description: The new content of the note
-        required: false
+        required: true
         type: string
-      - name: containerId
+      - name: container
         in: formData
         description: The new folder of the note
         required: false
@@ -136,7 +136,7 @@ paths:
             $ref: "#/definitions/Note"
         400:
           description: The note could not be updated as specified.
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The note could note be found.
@@ -156,7 +156,7 @@ paths:
       responses:
         204:
           description: The note was deleted successfully.
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The note could note be found.
@@ -176,7 +176,7 @@ paths:
         description: The title of the new folder.
         required: true
         type: string
-      - name: containerId
+      - name: container
         in: formData
         description: The folder to put the folder in.
         required: false
@@ -188,7 +188,7 @@ paths:
             $ref: "#/definitions/Folder"
         400:
           description: The folder could not be created as specified.
-        401:
+        403:
           description: The user is not authenticated.
     get:
       summary: Retrieve all folders
@@ -213,7 +213,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/FolderSummary"
-        401:
+        403:
           description: The user is not authenticated.
   /folder/{id}:
     get:
@@ -237,7 +237,7 @@ paths:
             properties:
               note:
                 $ref: "#/definitions/Folder"
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The folder could not be found.
@@ -261,7 +261,7 @@ paths:
         description: The new title of the note
         required: false
         type: string
-      - name: containerId
+      - name: container
         in: formData
         description: The new folder of the note
         required: false
@@ -273,7 +273,7 @@ paths:
             $ref: "#/definitions/Folder"
         400:
           description: The folder could not be updated as specified.
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The folder could note be found.
@@ -293,7 +293,7 @@ paths:
       responses:
         204:
           description: The folder was deleted successfully.
-        401:
+        403:
           description: The user is not authenticated.
         404:
           description: The folder could note be found.
@@ -301,7 +301,7 @@ definitions:
   Note:
     type: object
     properties:
-      id:
+      pk:
         type: string
       title:
         type: string
@@ -309,27 +309,27 @@ definitions:
         type: string
       timestamp:
         type: string
-      containerId:
+      container:
         type: string
   NoteSummary:
     type: object
     properties:
-      id:
+      pk:
         type: string
       title:
         type: string
       timestamp:
         type: string
-      containerId:
+      container:
         type: string
   Folder:
     type: object
     properties:
-      id:
+      pk:
         type: string
       title:
         type: string
-      containerId:
+      container:
         type: string
       notes:
         type: array
@@ -342,9 +342,9 @@ definitions:
   FolderSummary:
     type: object
     properties:
-      id:
+      pk:
         type: string
       title:
         type: string
-      containerId:
+      container:
         type: string
