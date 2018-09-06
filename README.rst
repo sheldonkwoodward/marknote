@@ -36,6 +36,7 @@ Tests
 To run the unit tests, simply use the Django test command with Pipenv.
 
 ::
+
     $ pipenv run python manage.py test
 
 
