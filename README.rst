@@ -6,9 +6,13 @@ MarkNote
 
 A simple note taking API for Django that supports creating notes and a folder structure. Built for the purpose of learning how to use the Django REST Framework to build a CRUD API.
 
+Installation
+============
+TODO
+
 Endpoints
 =========
-There are four different endpoints for the API. The ``marknote`` portion of the URI can be mapped using the Django urls.py file. It is setup as show in the sample project. Refer to the ``docs`` folder for a complete API specification.
+There are four different endpoints for the API. The ``marknote`` portion of the URI can be mapped using the Django urls.py file. It is setup as shown in the sample project. Refer to the ``docs`` folder for the complete OpenAPI specification.
 
 - ``/marknote/note``
 - ``/marknote/note/{id}``
@@ -16,20 +20,23 @@ There are four different endpoints for the API. The ``marknote`` portion of the 
 - ``/marknote/folder/{id}``
 
 /marknote/note
-++++++++++++++
-The create and list endpoint used to create and list all notes.
+  The create and list endpoint used to create and list all notes.
 
 /marknote/note/{id}
-+++++++++++++++++++
-The retrieve, update, and destroy endpoint used to access individual notes.
+  The retrieve, update, and destroy endpoint used to access individual notes.
 
 /marknote/folder
-++++++++++++++++
-The create and list endpoint used to create and list all folders.
+  The create and list endpoint used to create and list all folders.
 
 /marknote/folder/{id}
-+++++++++++++++++++++
-The retrieve, update, and destroy endpoint used to access individual folders.
+  The retrieve, update, and destroy endpoint used to access individual folders.
+  
+Tests
+=====
+To run the unit tests, simply use the Django test command with Pipenv.
+
+::
+    $ pipenv run python manage.py test
 
 
 .. |Build Status| image:: https://travis-ci.org/sheldonkwoodward/marknote.svg?branch=master
