@@ -8,7 +8,31 @@ A simple note taking API for Django that supports creating notes and a folder st
 
 Installation
 ============
-TODO
+1. Install with pip.
+::
+
+    $ pip install marknote
+
+2. Modify your ``INSTALLED_APPS`` in settings.py.
+
+::
+
+    INSTALLED_APPS = [
+        'rest_framework',
+        'rest_framework.authtoken',
+        'marknote',
+    ]
+
+3. Modify you ``urlpatterns`` in urls.py.
+
+::
+
+    from django.urls import include, re_path
+
+    urlpatterns = [
+        ...,
+        re_path(r'^marknote/', include(('marknote.urls', 'marknote'), namespace='marknote'))
+    ]
 
 Endpoints
 =========
