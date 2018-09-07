@@ -48,8 +48,14 @@ Installation
     from django.urls import include, re_path
 
     urlpatterns = [
-        re_path(r'^marknote/', include(('marknote.urls', 'marknote'), namespace-'marknote'))
+        re_path(r'^marknote/', include(('marknote.urls', 'marknote'), namespace='marknote'))
     ]
+    
+4. Run migrations.
+
+::
+
+    $ python manage.py migrate
 
 Endpoints
 ---------
