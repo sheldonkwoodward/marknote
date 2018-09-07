@@ -121,7 +121,7 @@ class TestNoteLCPost(APITestCase):
         # test database
         self.assertEqual(len(notes), 0)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
     def test_note_create_not_authorized(self):
@@ -278,7 +278,7 @@ class TestNoteLCGet(APITestCase):
         response = client.get(reverse(self.view_name))
         response_body = json.loads(response.content.decode('utf-8'))
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('notes' in response_body)
 
 
@@ -352,7 +352,7 @@ class TestNoteRUDGet(APITestCase):
         response = client.get(reverse(self.view_name, args=[note.id]))
         response_body = json.loads(response.content.decode('utf-8'))
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
 
@@ -523,7 +523,7 @@ class TestNoteRUDPutPatch(APITestCase):
         self.assertEqual(original_content, note.content)
         self.assertEqual(None, note.container)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
     def test_note_update_not_authorized(self):
@@ -633,7 +633,7 @@ class TestNoteRUDDelete(APITestCase):
         notes = Note.objects.all()
         self.assertEqual(len(notes), 1)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_note_destroy_not_authorized(self):
         """
