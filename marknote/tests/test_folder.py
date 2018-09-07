@@ -97,7 +97,7 @@ class TestFolderLCPost(APITestCase):
         # test database
         self.assertEqual(len(folders), 0)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
     def test_folder_create_not_authorized(self):
@@ -214,7 +214,7 @@ class TestFolderLCGet(APITestCase):
         response = client.get(reverse(self.view_name))
         response_body = json.loads(response.content.decode('utf-8'))
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('folders' in response_body)
 
 
@@ -288,7 +288,7 @@ class TestFolderRUDGet(APITestCase):
         response = client.get(reverse(self.view_name, args=[folder.id]))
         response_body = json.loads(response.content.decode('utf-8'))
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
 
@@ -445,7 +445,7 @@ class TestFolderRUDPutPatch(APITestCase):
         self.assertEqual(original_title, folder.title)
         self.assertEqual(None, folder.container)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse('pk' in response_body)
 
     def test_folder_update_not_authorized(self):
@@ -553,7 +553,7 @@ class TestFolderRUDDelete(APITestCase):
         folders = Folder.objects.all()
         self.assertEqual(len(folders), 1)
         # test response
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_folder_destroy_not_authorized(self):
         """
