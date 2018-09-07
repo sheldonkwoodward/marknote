@@ -57,6 +57,12 @@ Installation
 
     $ python manage.py migrate
 
+5. In the Django admin panel, generate a new token for the desired user. If they are not a superuser then they will
+need the MarkNote permissions added to their user.
+
+The request expects an ``Authorization`` header with the value of ``Token xxx`` where ``xxx`` is your generated token
+. This will be changed in the future to add Bearer token support.
+
 Endpoints
 ---------
 Documentation can be found `here <https://app.swaggerhub.com/apis/sheldonkwoodward3/marknote/docs/>`_. Refer to the ``docs`` folder for the OpenAPI specification file.
