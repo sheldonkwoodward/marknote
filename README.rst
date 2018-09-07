@@ -2,6 +2,7 @@ MarkNote
 --------
 |PyPI Version|
 |Python Versions|
+|License|
 |Build Status|
 |Codacy Quality Badge|
 |Codacy Coverage Badge|
@@ -66,9 +67,10 @@ To run the unit tests, simply use the Django test command with Pipenv.
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/marknote.svg
     :target: https://pypi.org/project/marknote/
 
-
 .. |Python Versions| image:: https://img.shields.io/pypi/pyversions/marknote.svg
 
+.. |License| image:: https://img.shields.io/github/license/sheldonkwoodward/marknote.svg
+    :target: https://github.com/sheldonkwoodward/marknote/LICENSE.txt
 
 .. |Build Status| image:: https://travis-ci.org/sheldonkwoodward/marknote.svg?branch=master
     :target: https://travis-ci.org/sheldonkwoodward/marknote
