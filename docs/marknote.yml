@@ -1,350 +1,356 @@
-swagger: '2.0'
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:8000/marknote'
 info:
-  version: 1.0.0
+  version: "1.0.1"
   title: MarkNote Documentation
-  description: A Markdown note taking tool for managing personal information and documentation. It is designed to be connected to a note management API. It implements the react-simplemde-editor.
-schemes:
-- http
-host: 'localhost:8000'
-basePath: /marknote
+  description: A simple note taking API for Django that supports creating notes and a
+    folder structure. Built for the purpose of learning how to use the Django
+    REST Framework to build a CRUD API.
 paths:
   /note:
     post:
       summary: Create a note
       description: A request to create a note.
       tags:
-      - note
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      parameters:
-      - name: title
-        in: formData
-        description: The title of the new note.
-        required: true
-        type: string
-      - name: content
-        in: formData
-        description: The content of the new note.
-        required: true
-        type: string
-      - name: container
-        in: formData
-        description: The folder to put the note in.
-        required: false
-        type: string
+        - note
       responses:
-        200:
+        '200':
           description: The note was created successfully.
-          schema:
-            $ref: "#/definitions/Note"
-        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
           description: The note could not be created as specified.
-        403:
+        '403':
           description: The user is not authenticated.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: The title of the new note.
+                  type: string
+                content:
+                  description: The content of the new note.
+                  type: string
+                container:
+                  description: The folder to put the note in.
+                  type: string
+              required:
+                - title
     get:
       summary: Retrieve all notes
       description: A request to retrieve all notes and filter with query paramters.
       tags:
-      - note
-      produces:
-      - "application/json"
+        - note
       parameters:
-      - name: title
-        in: query
-        description: The title to search for and filter by.
-        required: false
-        type: string
-      - name: content
-        in: query
-        description: The content to search for and filter by.
-        required: false
-        type: string
-      responses:
-        200:
-          description: The notes were retrieved successfully.
+        - name: title
+          in: query
+          description: The title to search for and filter by.
+          required: false
           schema:
-            type: object
-            properties:
-              notes:
-                type: array
-                items:
-                  $ref: "#/definitions/NoteSummary"
-        403:
+            type: string
+        - name: content
+          in: query
+          description: The content to search for and filter by.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The notes were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NoteSummary'
+        '403':
           description: The user is not authenticated.
-  /note/{id}:
+  '/note/{id}':
     get:
       summary: Retrieve a note
       description: A request to retrieve a note.
       tags:
-      - note
-      produces:
-      - "application/json"
+        - note
       parameters:
-      - name: id
-        in: path
-        description: The ID of the note to retrieve
-        required: true
-        type: string
-      responses:
-        200:
-          description: The note was retrieved successfully.
+        - name: id
+          in: path
+          description: The ID of the note to retrieve
+          required: true
           schema:
-            type: object
-            properties:
-              note:
-                $ref: "#/definitions/Note"
-        403:
+            type: string
+      responses:
+        '200':
+          description: The note was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  note:
+                    $ref: '#/components/schemas/Note'
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The note could not be found.
     put:
       summary: Update a note
       description: A request to update a note.
       tags:
-      - note
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
+        - note
       parameters:
-      - name: id
-        in: path
-        description: The ID of the note to update.
-        required: true
-        type: string
-      - name: title
-        in: formData
-        description: The new title of the note
-        required: true
-        type: string
-      - name: content
-        in: formData
-        description: The new content of the note
-        required: true
-        type: string
-      - name: container
-        in: formData
-        description: The new folder of the note
-        required: false
-        type: string
-      responses:
-        200:
-          description: The note was updated successfully.
+        - name: id
+          in: path
+          description: The ID of the note to update.
+          required: true
           schema:
-            $ref: "#/definitions/Note"
-        400:
+            type: string
+      responses:
+        '200':
+          description: The note was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
           description: The note could not be updated as specified.
-        403:
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The note could note be found.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: The new title of the note
+                  type: string
+                content:
+                  description: The new content of the note
+                  type: string
+                container:
+                  description: The new folder of the note
+                  type: string
+              required:
+                - title
     delete:
       summary: Delete a note
       description: A request to delete a note.
       tags:
-      - note
-      produces:
-      - "application/json"
+        - note
       parameters:
-      - name: id
-        in: path
-        description: The ID of the note to delete.
-        required: true
-        type: string
+        - name: id
+          in: path
+          description: The ID of the note to delete.
+          required: true
+          schema:
+            type: string
       responses:
-        204:
+        '204':
           description: The note was deleted successfully.
-        403:
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The note could note be found.
   /folder:
     post:
       summary: Create a folder
       description: A request to create a folder.
       tags:
-      - folder
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      parameters:
-      - name: title
-        in: formData
-        description: The title of the new folder.
-        required: true
-        type: string
-      - name: container
-        in: formData
-        description: The folder to put the folder in.
-        required: false
-        type: string
+        - folder
       responses:
-        200:
+        '200':
           description: The folder was created successfully.
-          schema:
-            $ref: "#/definitions/Folder"
-        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+        '400':
           description: The folder could not be created as specified.
-        403:
+        '403':
           description: The user is not authenticated.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: The title of the new folder.
+                  type: string
+                container:
+                  description: The folder to put the folder in.
+                  type: string
+              required:
+                - title
     get:
       summary: Retrieve all folders
       description: A request to retrieve all notes and filter with query paramters.
       tags:
-      - folder
-      produces:
-      - "application/json"
+        - folder
       parameters:
-      - name: title
-        in: query
-        description: The title to search for and filter by.
-        required: false
-        type: string
-      responses:
-        200:
-          description: The folders were retrieved successfully.
+        - name: title
+          in: query
+          description: The title to search for and filter by.
+          required: false
           schema:
-            type: object
-            properties:
-              folders:
-                type: array
-                items:
-                  $ref: "#/definitions/FolderSummary"
-        403:
+            type: string
+      responses:
+        '200':
+          description: The folders were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  folders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FolderSummary'
+        '403':
           description: The user is not authenticated.
-  /folder/{id}:
+  '/folder/{id}':
     get:
       summary: Retrieve a folder
       description: A request to retrieve a folder.
       tags:
-      - folder
-      produces:
-      - "application/json"
+        - folder
       parameters:
-      - name: id
-        in: path
-        description: The ID of the folder to retrieve
-        required: true
-        type: string
-      responses:
-        200:
-          description: The folder was retrieved successfully.
+        - name: id
+          in: path
+          description: The ID of the folder to retrieve
+          required: true
           schema:
-            type: object
-            properties:
-              note:
-                $ref: "#/definitions/Folder"
-        403:
+            type: string
+      responses:
+        '200':
+          description: The folder was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  note:
+                    $ref: '#/components/schemas/Folder'
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The folder could not be found.
     put:
       summary: Update a folder
       description: A request to update a folder.
       tags:
-      - folder
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
+        - folder
       parameters:
-      - name: id
-        in: path
-        description: The ID of the folder to update.
-        required: true
-        type: string
-      - name: title
-        in: formData
-        description: The new title of the note
-        required: false
-        type: string
-      - name: container
-        in: formData
-        description: The new folder of the note
-        required: false
-        type: string
-      responses:
-        200:
-          description: The folder was updated successfully.
+        - name: id
+          in: path
+          description: The ID of the folder to update.
+          required: true
           schema:
-            $ref: "#/definitions/Folder"
-        400:
+            type: string
+      responses:
+        '200':
+          description: The folder was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+        '400':
           description: The folder could not be updated as specified.
-        403:
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The folder could note be found.
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: The new title of the note
+                  type: string
+                container:
+                  description: The new folder of the note
+                  type: string
     delete:
       summary: Delete a folder
       description: A request to delete a folder.
       tags:
-      - folder
-      produces:
-      - "application/json"
+        - folder
       parameters:
-      - name: id
-        in: path
-        description: The ID of the folder to delete.
-        required: true
-        type: string
+        - name: id
+          in: path
+          description: The ID of the folder to delete.
+          required: true
+          schema:
+            type: string
       responses:
-        204:
+        '204':
           description: The folder was deleted successfully.
-        403:
+        '403':
           description: The user is not authenticated.
-        404:
+        '404':
           description: The folder could note be found.
-definitions:
-  Note:
-    type: object
-    properties:
-      pk:
-        type: string
-      title:
-        type: string
-      content:
-        type: string
-      timestamp:
-        type: string
-      container:
-        type: string
-  NoteSummary:
-    type: object
-    properties:
-      pk:
-        type: string
-      title:
-        type: string
-      timestamp:
-        type: string
-      container:
-        type: string
-  Folder:
-    type: object
-    properties:
-      pk:
-        type: string
-      title:
-        type: string
-      container:
-        type: string
-      notes:
-        type: array
-        items:
-          $ref: "#/definitions/NoteSummary"
-      folders:
-        type: array
-        items:
-          $ref: "#/definitions/FolderSummary"
-  FolderSummary:
-    type: object
-    properties:
-      pk:
-        type: string
-      title:
-        type: string
-      container:
-        type: string
+components:
+  schemas:
+    Note:
+      type: object
+      properties:
+        pk:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        timestamp:
+          type: string
+        container:
+          type: string
+    NoteSummary:
+      type: object
+      properties:
+        pk:
+          type: string
+        title:
+          type: string
+        timestamp:
+          type: string
+        container:
+          type: string
+    Folder:
+      type: object
+      properties:
+        pk:
+          type: string
+        title:
+          type: string
+        container:
+          type: string
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteSummary'
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderSummary'
+    FolderSummary:
+      type: object
+      properties:
+        pk:
+          type: string
+        title:
+          type: string
+        container:
+          type: string
