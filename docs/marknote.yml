@@ -2,7 +2,7 @@ openapi: 3.0.0
 servers:
   - url: 'http://localhost:8000/marknote'
 info:
-  version: "1.0.1"
+  version: "1.0"
   title: MarkNote Documentation
   description: A simple note taking API for Django that supports creating notes and a
     folder structure. Built for the purpose of learning how to use the Django
