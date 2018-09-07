@@ -9,7 +9,7 @@ from marknote.models import Note, Folder
 
 
 class NoteListCreateView(ListCreateAPIView):
-    authentication_classes = (BearerAuthentication, SessionAuthentication, TokenAuthentication)
+    authentication_classes = (SessionAuthentication, BearerAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.NoteSummarySerializer
@@ -43,7 +43,7 @@ class NoteListCreateView(ListCreateAPIView):
 
 
 class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (BearerAuthentication, SessionAuthentication, TokenAuthentication)
+    authentication_classes = (SessionAuthentication, BearerAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.NoteSerializer
@@ -53,7 +53,7 @@ class NoteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 
 class FolderListCreateView(ListCreateAPIView):
-    authentication_classes = (BearerAuthentication, SessionAuthentication, TokenAuthentication)
+    authentication_classes = (SessionAuthentication, BearerAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.FolderSummarySerializer
@@ -77,7 +77,7 @@ class FolderListCreateView(ListCreateAPIView):
 
 
 class FolderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (BearerAuthentication, SessionAuthentication, TokenAuthentication)
+    authentication_classes = (SessionAuthentication, BearerAuthentication, TokenAuthentication)
     permission_classes = (DjangoModelPermissions,)
     lookup_field = 'pk'
     serializer_class = serializers.FolderSerializer
