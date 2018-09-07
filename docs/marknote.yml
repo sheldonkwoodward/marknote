@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 1.0.0
+  version: 1.0.1
   title: MarkNote Documentation
   description: A Markdown note taking tool for managing personal information and documentation. It is designed to be connected to a note management API. It implements the react-simplemde-editor.
 schemes:
