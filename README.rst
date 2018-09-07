@@ -1,5 +1,7 @@
 MarkNote
 --------
+|PyPI Version|
+|Python Versions|
 |Build Status|
 |Codacy Quality Badge|
 |Codacy Coverage Badge|
@@ -59,6 +61,13 @@ To run the unit tests, simply use the Django test command with Pipenv.
 ::
 
     $ pipenv run python manage.py test
+
+
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/marknote.svg
+    :target: https://pypi.org/project/marknote/
+
+
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/marknote.svg
 
 
 .. |Build Status| image:: https://travis-ci.org/sheldonkwoodward/marknote.svg?branch=master
