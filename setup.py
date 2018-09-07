@@ -27,7 +27,6 @@ setup(
     classifiers=[
         'Framework :: Django :: 2.0',
         'Framework :: Django :: 2.1',
-        'Framework :: Django :: 2.1.1',
         'Intended Audience :: Developers',
         'License :: Public Domain',
         'Natural Language :: English',
