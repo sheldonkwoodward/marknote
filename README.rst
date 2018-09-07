@@ -8,7 +8,8 @@ MarkNote
 |Codacy Quality Badge|
 |Codacy Coverage Badge|
 
-A simple note taking API for Django that supports creating notes and a folder structure. Built for the purpose of learning how to use the Django REST Framework to build a CRUD API.
+A simple note taking API for Django that supports creating notes and a folder structure. Built for the purpose of
+learning how to use the Django REST Framework to build a CRUD API.
 
 Features
 --------
@@ -48,14 +49,28 @@ Installation
     from django.urls import include, re_path
 
     urlpatterns = [
-        re_path(r'^marknote/', include(('marknote.urls', 'marknote'), namespace-'marknote'))
+        re_path(r'^marknote/', include(('marknote.urls', 'marknote'), namespace='marknote'))
     ]
+    
+4. Run migrations.
+
+::
+
+    $ python manage.py migrate
+
+5. In the Django admin panel, generate a new token for the desired user. If they are not a superuser then they will
+need the MarkNote permissions added to their user.
+
+The request expects an ``Authorization`` header with the value of ``Token xxx`` where ``xxx`` is your token. This
+will be changed in the future to add Bearer token support.
 
 Endpoints
 ---------
-Documentation can be found `here <https://app.swaggerhub.com/apis/sheldonkwoodward3/marknote/docs/>`_. Refer to the ``docs`` folder for the OpenAPI specification file.
+Documentation can be found `here <https://app.swaggerhub.com/apis/sheldonkwoodward3/marknote/docs/>`_. Refer to the
+``docs`` folder for the OpenAPI specification file.
 
-There are four different endpoints for the API. The ``marknote`` portion of the URI can be mapped using the Django urls.py file. It is setup as shown in the sample project.
+There are four different endpoints for the API. The ``marknote`` portion of the URI can be mapped using the Django
+urls.py file. It is setup as shown in the sample project.
 
 /marknote/note
   The create and list endpoint used to create and list all notes.
